@@ -42,51 +42,6 @@ public class MainActivity extends AppCompatActivity {
         rows.add(new String[]{"4","Lorena", "Espejel"});
         return rows;
     }
-
-
-
-
-
-
-
-
-
-        //        File pdfFolder = new File(Environment.getExternalStoragePublicDirectory(
-//                Environment.DIRECTORY_DOCUMENTS), "pdfdemo");
-//        if (!pdfFolder.exists()) {
-//            pdfFolder.mkdir();
-//            Log.i(LOG_TAG, "Pdf Directory created");
-//        }
-
-//        Document document = new Document();
-//        String outpath = Environment.getExternalStorageDirectory()+"/storage/emulated/0/Documents/helloworld.pdf";
-//        try {
-//            Toast toast = Toast.makeText(getApplicationContext(),
-//                    "Файл создан", Toast.LENGTH_SHORT);
-//            toast.show();
-//            PdfWriter.getInstance(document,
-//                    new FileOutputStream(outpath));
-//            document.open();
-//            document.add(new Paragraph("A Hello World PDF document."));
-//            document.close(); // no need to close PDFwriter?
-//            PdfPTable t = new PdfPTable(3);
-//            t.setSpacingBefore(25);
-//            t.setSpacingAfter(25);
-//            PdfPCell c1 = new PdfPCell(new Phrase("Header1"));
-//            t.addCell(c1);
-//            PdfPCell c2 = new PdfPCell(new Phrase("Header2"));
-//            t.addCell(c2);
-//            PdfPCell c3 = new PdfPCell(new Phrase("Header3"));
-//            t.addCell(c3);
-//            t.addCell("1.1");
-//            t.addCell("1.2");
-//            t.addCell("1.3");
-
-//        } catch (DocumentException e) {
-//            e.printStackTrace();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
 }
 
 
