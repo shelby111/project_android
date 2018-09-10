@@ -90,6 +90,17 @@ public class TemplatePDF {
         }
     }
 
+    public void addCenter(String title) {
+        try {
+            paragraph = new Paragraph();
+            addChildP(new Paragraph(title, fontbd));
+            paragraph.setSpacingAfter(5);
+            document.add(paragraph);
+        }catch (Exception e) {
+            Log.e("addCenter", e.toString());
+        }
+    }
+
     public void addZag(String zag) {
         try {
             paragraph = new Paragraph();
@@ -116,17 +127,48 @@ public class TemplatePDF {
         }
     }
 
-    public void addRoom(String nameRoom){
+    public void addRoom(String nameRoom, String number){
         try {
+            int k = 1;
             paragraph = new Paragraph();
             paragraph.setFont(fontbd);
-            PdfPTable pdfPTable = new PdfPTable(1);
+            PdfPTable pdfPTable = new PdfPTable(6);
+            float[] columnWidths = new float[]{10f, 30f, 19f, 16f, 16f, 30f};
+            pdfPTable.setWidths(columnWidths);
             pdfPTable.setWidthPercentage(100);
             PdfPCell pdfPCell;
-            pdfPCell = new PdfPCell(new Phrase(nameRoom, fontbd));
-            pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            pdfPTable.addCell(pdfPCell);
+            while (k <= 6) {
+                pdfPCell = new PdfPCell(new Phrase(" ", font));
+                pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                pdfPTable.addCell(pdfPCell);
+                k++;
+            }
             paragraph.add(pdfPTable);
+            document.add(paragraph);
+            paragraph = new Paragraph();
+            paragraph.setFont(fontbd);
+            PdfPTable pdfPTable2 = new PdfPTable(1);
+            pdfPTable2.setWidthPercentage(100);
+            PdfPCell pdfPCell2;
+            pdfPCell2 = new PdfPCell(new Phrase(number + nameRoom, fontbd));
+            pdfPCell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+            pdfPTable2.addCell(pdfPCell2);
+            paragraph.add(pdfPTable2);
+            document.add(paragraph);
+            k=1;
+            paragraph = new Paragraph();
+            paragraph.setFont(fontbd);
+            PdfPTable pdfPTable3 = new PdfPTable(6);
+            pdfPTable3.setWidths(columnWidths);
+            pdfPTable3.setWidthPercentage(100);
+            PdfPCell pdfPCell3;
+            while (k <= 6) {
+                pdfPCell3 = new PdfPCell(new Phrase(" ", fontbd));
+                pdfPCell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+                pdfPTable3.addCell(pdfPCell3);
+                k++;
+            }
+            paragraph.add(pdfPTable3);
             document.add(paragraph);
         }catch (Exception e) {
             Log.e("addRoom", e.toString());
@@ -138,6 +180,8 @@ public class TemplatePDF {
             paragraph = new Paragraph();
             paragraph.setFont(font);
             PdfPTable pdfPTable = new PdfPTable(elements.length);
+            float[] columnWidths = new float[]{10f, 30f, 19f, 16f, 16f, 30f};
+            pdfPTable.setWidths(columnWidths);
             pdfPTable.setWidthPercentage(100);
             PdfPCell pdfPCell;
             int indexC = 0;
@@ -158,6 +202,8 @@ public class TemplatePDF {
             paragraph = new Paragraph();
             paragraph.setFont(font);
             PdfPTable pdfPTable = new PdfPTable(header.length);
+            float[] columnWidths = new float[]{10f, 30f, 19f, 16f, 16f, 30f};
+            pdfPTable.setWidths(columnWidths);
             pdfPTable.setWidthPercentage(100);
             pdfPTable.setSpacingBefore(20);
             PdfPCell pdfPCell;
@@ -170,9 +216,8 @@ public class TemplatePDF {
             for (int indexR = 0; indexR < clients.size(); indexR++) {
                 String[]row = clients.get(indexR);
                 for (indexC = 0; indexC < header.length; indexC++) {
-                    pdfPCell = new PdfPCell(new Phrase(row[indexC], font));
+                    pdfPCell = new PdfPCell(new Phrase(row[indexC], fontbd));
                     pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    pdfPCell.setFixedHeight(40);
                     pdfPTable.addCell(pdfPCell);
                 }
             }
