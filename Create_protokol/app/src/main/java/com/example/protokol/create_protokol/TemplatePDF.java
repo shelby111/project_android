@@ -9,31 +9,23 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
-
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.FontFactory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilterOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class TemplatePDF {
     public static final String FONTBD = "res/font/timesbd.ttf";
@@ -65,7 +57,8 @@ public class TemplatePDF {
         File folder = new File(Environment.getExternalStorageDirectory().toString(), "PDF");
         if (!folder.exists())
              folder.mkdirs();
-        pdfFile = new File(folder, "TemplatePDF.pdf");
+        Date currentTime = Calendar.getInstance().getTime();
+        pdfFile = new File(folder, "TemplatePDF" + "(" + currentTime + ")" + ".pdf");
     }
 
     public void closeDocument() {
