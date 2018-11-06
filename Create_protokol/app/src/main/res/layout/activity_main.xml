@@ -123,14 +123,14 @@
         android:id="@+id/button18"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="9dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:background="#708ea9"
         android:text="Рез. пров. авт. выключателей"
         android:textColor="@color/fon"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/button6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button21"
         app:layout_constraintTop_toBottomOf="@+id/button19" />
@@ -184,5 +184,23 @@
         app:layout_constraintEnd_toStartOf="@+id/button18"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button18" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="329dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="43dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@color/textbutton"
+        android:onClick="updatebase"
+        android:text="Обновление данных"
+        android:textColor="@color/fon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button18" />
 
 </android.support.constraint.ConstraintLayout>

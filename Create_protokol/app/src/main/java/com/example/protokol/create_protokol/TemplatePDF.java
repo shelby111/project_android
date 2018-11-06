@@ -42,8 +42,8 @@ public class TemplatePDF {
         this.context = context;
     }
 
-    public void openDocument() {
-        createFile();
+    public void openDocument(String namefile) {
+        createFile(namefile);
         try {
             document = new Document(PageSize.A4);
             pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
@@ -53,12 +53,11 @@ public class TemplatePDF {
         }
     }
 
-    private void createFile() {
+    private void createFile(String namefile) {
         File folder = new File(Environment.getExternalStorageDirectory().toString(), "PDF");
         if (!folder.exists())
              folder.mkdirs();
-        Date currentTime = Calendar.getInstance().getTime();
-        pdfFile = new File(folder, "TemplatePDF" + "(" + currentTime + ")" + ".pdf");
+        pdfFile = new File(folder, namefile + ".pdf");
     }
 
     public void closeDocument() {
@@ -87,6 +86,7 @@ public class TemplatePDF {
         try {
             paragraph = new Paragraph();
             addChildP(new Paragraph(title, fontbd));
+            paragraph.setSpacingBefore(7);
             paragraph.setSpacingAfter(5);
             document.add(paragraph);
         }catch (Exception e) {
