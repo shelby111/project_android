@@ -46,7 +46,7 @@ public class RoomElementActivity extends AppCompatActivity {
     DBHelper dbHelper;
     private static final String[] elements = new String[]{"Розетка с з.к.", "Розетка без з.к.", "Системный блок", "Сетевой фильтр 5 гн", "Сетевой фильтр 6 гн", "Удлинитель с з.к. 5 гн", "Удлинитель без з.к.", "Принтер", "МФУ", "Блок розеток с з.к. 2 гн", "Копир. аппарат", "СВЧ-печь", "Холодильник"};
     int countroom = 0;
-    int roomId;
+    int roomIdActive;
     private String[] soprot = {"0,02","0,03","0,04"} ;
     private ArrayList<String[]>getClients(){
         ArrayList<String[]>rows = new ArrayList<>();
@@ -122,7 +122,7 @@ public class RoomElementActivity extends AppCompatActivity {
                             int nameIndex = cursor.getColumnIndex(DBHelper.KEY_NAME);
                             int ridIndex = cursor. getColumnIndex(DBHelper.KEY_ID);
                             do {
-                                roomId = cursor.getInt(ridIndex);
+                                roomIdActive = cursor.getInt(ridIndex);
                                 nroom.setText(cursor.getString(nameIndex));
                             } while (cursor.moveToNext());
                         }
@@ -160,7 +160,7 @@ public class RoomElementActivity extends AppCompatActivity {
                                 Toast toast = Toast.makeText(getApplicationContext(),
                                         "Комната <" + nameRoom + "> добавлена", Toast.LENGTH_SHORT);
                                 toast.show();
-                                roomId = countroom;
+                                roomIdActive = countroom;
                                 nroom.setText(nameRoom);
                             }
                         });
@@ -222,7 +222,7 @@ public class RoomElementActivity extends AppCompatActivity {
                             switch1.setChecked(false);
                             actv2.setText("");
                             kolvo.setText("");
-                            newEL.put(DBHelper.ROOM_ID, roomId);
+                            newEL.put(DBHelper.ROOM_ID, roomIdActive);
                             newEL.put(DBHelper.EL_NAME, nameElement);
                             newEL.put(DBHelper.EL_NUMBER, kolvo1);
                             newEL.put(DBHelper.EL_SOPR, r);
@@ -363,6 +363,99 @@ public class RoomElementActivity extends AppCompatActivity {
                                 });
                                 AlertDialog dialog3 = builder3.create();
                                 dialog3.show();
+
+                            }
+                        });
+                        builder2.setPositiveButton("Удалить комнату", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                //ПОДТВЕРЖДЕНИЕ
+                                AlertDialog.Builder builder4 = new AlertDialog.Builder(RoomElementActivity.this);
+                                builder4.setCancelable(false);
+                                builder4.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                        if (finalRooms[r_id-1].substring(3).equals(nroom.getText())) {
+                                            nroom.setText("Комната не выбрана");
+                                        }
+                                        database.delete(DBHelper.TABLE_ELEMENTS, "room_id = ?", new String[] {String.valueOf(r_id)});
+                                        database.delete(DBHelper.TABLE_ROOMS, "_id = ?", new String[] {String.valueOf(r_id)});
+
+                                        //ЗАПРОС В БД И ИЗМЕНЕНИЕ КАЖДОГО ID КОМНАТЫ КАК В ТАЛИЦЕ ЭЛЕМЕНТОВ, ТАК И В ТАБЛИЦЕ КОМНАТ НА -1(ПОСЛЕ УДАЛЕННОГО ЭЛЕМЕНТА)
+                                        Cursor cursor = database.query(DBHelper.TABLE_ROOMS, new String[] {DBHelper.KEY_ID, DBHelper.KEY_NAME}, "_id > ?", new String[] {String.valueOf(r_id)}, null, null, null);
+                                        if (cursor.moveToFirst()) {
+                                            int roomchangeIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
+                                            do {
+                                                //В ТАБЛИЦЕ КОМНАТ
+                                                ContentValues uppid = new ContentValues();
+                                                uppid.put(DBHelper.KEY_ID, String.valueOf(cursor.getInt(roomchangeIndex)-1));
+                                                database.update(DBHelper.TABLE_ROOMS,
+                                                        uppid,
+                                                        "_id = ?",
+                                                        new String[] {cursor.getString(roomchangeIndex)});
+
+                                                //В ТАБЛИЦЕ ЭЛЕМЕНТОВ
+                                                ContentValues uppidInElement = new ContentValues();
+                                                uppidInElement.put(DBHelper.ROOM_ID, String.valueOf(cursor.getInt(roomchangeIndex)-1));
+                                                database.update(DBHelper.TABLE_ELEMENTS,
+                                                        uppidInElement,
+                                                        "room_id = ?",
+                                                        new String[] {cursor.getString(roomchangeIndex)});
+                                            } while (cursor.moveToNext());
+                                            countroom = countroom - 1;
+                                        }
+                                        else {
+                                            countroom = countroom - 1;
+                                        }
+                                        cursor.close();
+
+                                        Toast toast2 = Toast.makeText(getApplicationContext(),
+                                                "Комната <" + finalRooms[r_id-1].substring(3) + "> удалена", Toast.LENGTH_SHORT);
+                                        toast2.show();
+
+                                    }
+                                });
+                                builder4.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                    }
+                                });
+                                builder4.setMessage("Вы точно хотите удалить комнату <" + finalRooms[r_id-1].substring(3) + ">?");
+                                AlertDialog dialog4 = builder4.create();
+                                dialog4.show();
+
+                            }
+                        });
+                        builder2.setNegativeButton("Изменить", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                AlertDialog.Builder alert = new AlertDialog.Builder(RoomElementActivity.this);
+                                alert.setCancelable(false);
+                                alert.setTitle("Введите новое название комнаты:");
+                                final EditText input = new EditText(RoomElementActivity.this);
+                                alert.setView(input);
+                                alert.setPositiveButton("Изменить", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        final String namer = input.getText().toString();
+                                        ContentValues uppname = new ContentValues();
+                                        uppname.put(DBHelper.KEY_NAME, namer);
+                                        database.update(DBHelper.TABLE_ROOMS,
+                                                uppname,
+                                                "_id = ?",
+                                                new String[] {String.valueOf(r_id)});
+                                        if (r_id == roomIdActive)
+                                            nroom.setText(namer);
+                                        Toast toast1 = Toast.makeText(getApplicationContext(),
+                                                "Название изменено: " + namer, Toast.LENGTH_SHORT);
+                                        toast1.show();
+                                    }
+                                });
+                                alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    }
+                                });
+                                alert.show();
 
                             }
                         });

@@ -51,4 +51,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent("android.intent.action.RoomElement");
         startActivity(intent);
     }
+
+    public void insulation (View view) {
+        Intent intent = new Intent("android.intent.action.Insulation");
+        startActivity(intent);
+    }
 }

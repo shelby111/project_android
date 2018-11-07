@@ -112,6 +112,7 @@
         android:layout_marginRight="2dp"
         android:layout_marginStart="16dp"
         android:background="#708ea9"
+        android:onClick="insulation"
         android:text="Рез.пров. сопрот. изоляции пров. и каб."
         android:textColor="@color/fon"
         android:textSize="12sp"

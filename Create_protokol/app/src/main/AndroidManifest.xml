@@ -19,10 +19,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".RoomElementActivity">
+        <activity android:name=".RoomElementActivity">
             <intent-filter>
                 <action android:name="android.intent.action.RoomElement" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".InsulationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.Insulation" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
