@@ -10,7 +10,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.ExceptionConverter;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
@@ -18,6 +20,8 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
+import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.FontFactory;
 
@@ -26,6 +30,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class TemplatePDF {
     public static final String FONTBD = "res/font/timesbd.ttf";
@@ -42,10 +47,13 @@ public class TemplatePDF {
         this.context = context;
     }
 
-    public void openDocument(String namefile) {
+    public void openDocument(String namefile, Boolean horizon) {
         createFile(namefile);
         try {
-            document = new Document(PageSize.A4);
+            if (!horizon)
+                document = new Document(PageSize.A4);
+            else
+                document = new Document(PageSize.A4.rotate());
             pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
             document.open();
         }catch (Exception e) {
@@ -94,6 +102,18 @@ public class TemplatePDF {
         }
     }
 
+    public void addCenterNotBD(String title) {
+        try {
+            paragraph = new Paragraph();
+            addChildP(new Paragraph(title, font));
+            paragraph.setSpacingBefore(7);
+            paragraph.setSpacingAfter(5);
+            document.add(paragraph);
+        }catch (Exception e) {
+            Log.e("addCenter", e.toString());
+        }
+    }
+
     public void addZag(String zag) {
         try {
             paragraph = new Paragraph();
@@ -122,7 +142,6 @@ public class TemplatePDF {
 
     public void addRoom(String nameRoom, String number){
         try {
-            int k = 1;
             paragraph = new Paragraph();
             paragraph.setFont(fontbd);
             PdfPTable pdfPTable = new PdfPTable(6);
@@ -130,58 +149,102 @@ public class TemplatePDF {
             pdfPTable.setWidths(columnWidths);
             pdfPTable.setWidthPercentage(100);
             PdfPCell pdfPCell;
-            while (k <= 6) {
+            int i;
+
+            for (i = 1; i < 7; i++) {
+                PdfPTable help = new PdfPTable(1);
+                pdfPCell = new PdfPCell(new Phrase(String.valueOf(i), fontbd));
+                pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                help.addCell(pdfPCell);
                 pdfPCell = new PdfPCell(new Phrase(" ", font));
                 pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                help.addCell(pdfPCell);
+                pdfPCell = new PdfPCell(help);
+                pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 pdfPTable.addCell(pdfPCell);
-                k++;
             }
+            pdfPTable.setHeaderRows(1);
+            pdfPTable.setSkipFirstHeader(true);
+
+            for (i = 1; i < 14; i++) {
+                if (i != 7) {
+                    pdfPCell = new PdfPCell(new Phrase(" ", fontbd));
+                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    pdfPTable.addCell(pdfPCell);
+                }
+                else {
+                    pdfPCell = new PdfPCell(new Phrase(number + nameRoom, fontbd));
+                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    pdfPCell.setColspan(6);
+                    pdfPTable.addCell(pdfPCell);
+                }
+            }
+            pdfPTable.setKeepTogether(true);
+//            if (isSkipLastFooter()){
+//                pdfPTable.deleteBodyRows();
+//                for (i = 1; i < 7; i++) {
+//                    PdfPTable help = new PdfPTable(1);
+//                    pdfPCell = new PdfPCell(new Phrase(String.valueOf(i), fontbd));
+//                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//                    help.addCell(pdfPCell);
+//                    pdfPCell = new PdfPCell(new Phrase(" ", font));
+//                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//                    help.addCell(pdfPCell);
+//                    pdfPCell = new PdfPCell(help);
+//                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//                    pdfPTable.addCell(pdfPCell);
+//                }
+//                for (i = 1; i < 14; i++) {
+//                    if (i != 7) {
+//                        pdfPCell = new PdfPCell(new Phrase(" ", fontbd));
+//                        pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//                        pdfPTable.addCell(pdfPCell);
+//                    }
+//                    else {
+//                        pdfPCell = new PdfPCell(new Phrase(number + nameRoom, fontbd));
+//                        pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//                        pdfPCell.setColspan(6);
+//                        pdfPTable.addCell(pdfPCell);
+//                    }
+//                }
+//            }
             paragraph.add(pdfPTable);
-            document.add(paragraph);
-            paragraph = new Paragraph();
-            paragraph.setFont(fontbd);
-            PdfPTable pdfPTable2 = new PdfPTable(1);
-            pdfPTable2.setWidthPercentage(100);
-            PdfPCell pdfPCell2;
-            pdfPCell2 = new PdfPCell(new Phrase(number + nameRoom, fontbd));
-            pdfPCell2.setHorizontalAlignment(Element.ALIGN_CENTER);
-            pdfPTable2.addCell(pdfPCell2);
-            paragraph.add(pdfPTable2);
-            document.add(paragraph);
-            k=1;
-            paragraph = new Paragraph();
-            paragraph.setFont(fontbd);
-            PdfPTable pdfPTable3 = new PdfPTable(6);
-            pdfPTable3.setWidths(columnWidths);
-            pdfPTable3.setWidthPercentage(100);
-            PdfPCell pdfPCell3;
-            while (k <= 6) {
-                pdfPCell3 = new PdfPCell(new Phrase(" ", fontbd));
-                pdfPCell3.setHorizontalAlignment(Element.ALIGN_CENTER);
-                pdfPTable3.addCell(pdfPCell3);
-                k++;
-            }
-            paragraph.add(pdfPTable3);
             document.add(paragraph);
         }catch (Exception e) {
             Log.e("addRoom", e.toString());
         }
     }
 
-    public void addElement(String[]elements) {
+    public void addElement(ArrayList<ArrayList> elements) {
         try {
             paragraph = new Paragraph();
             paragraph.setFont(font);
-            PdfPTable pdfPTable = new PdfPTable(elements.length);
+            PdfPTable pdfPTable = new PdfPTable(6);
             float[] columnWidths = new float[]{10f, 30f, 19f, 16f, 16f, 30f};
             pdfPTable.setWidths(columnWidths);
             pdfPTable.setWidthPercentage(100);
             PdfPCell pdfPCell;
-            int indexC = 0;
-            while (indexC < elements.length) {
-                pdfPCell = new PdfPCell(new Phrase(elements[indexC++], font));
+            int i, j;
+            for (i = 1; i < 7; i++) {
+                PdfPTable help = new PdfPTable(1);
+                pdfPCell = new PdfPCell(new Phrase(String.valueOf(i), fontbd));
+                pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                help.addCell(pdfPCell);
+                pdfPCell = new PdfPCell(new Phrase(" ", font));
+                pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                help.addCell(pdfPCell);
+                pdfPCell = new PdfPCell(help);
                 pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 pdfPTable.addCell(pdfPCell);
+            }
+            pdfPTable.setHeaderRows(1);
+            pdfPTable.setSkipFirstHeader(true);
+            for (i = 0; i < elements.size(); i++) {
+                for (j = 0; j < 6; j++) {
+                    pdfPCell = new PdfPCell(new Phrase(String.valueOf(elements.get(i).get(j)), font));
+                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    pdfPTable.addCell(pdfPCell);
+                }
             }
             paragraph.add(pdfPTable);
             document.add(paragraph);
@@ -218,6 +281,87 @@ public class TemplatePDF {
             document.add(paragraph);
         }catch (Exception e) {
             Log.e("createTable", e.toString());
+        }
+    }
+
+    public void createTableInsulation(String[]header) {
+        try {
+            paragraph = new Paragraph();
+            paragraph.setFont(font);
+            PdfPTable pdfPTable = new PdfPTable(9);
+            float[] columnWidths = new float[]{3.2f, 15.4f, 4.2f, 5.3f, 6.7f, 4.2f, 5.4f, 47.7f, 6.7f};
+            pdfPTable.setWidths(columnWidths);
+            pdfPTable.setWidthPercentage(100);
+            pdfPTable.setSpacingBefore(20);
+            PdfPCell pdfPCell;
+            int index = 0, i, j;
+            for (i = 0; i < 9; ++i) {
+                if (i == 0 || i == 1) {
+                    pdfPCell = new PdfPCell(new Phrase(header[index], font));
+                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                    pdfPTable.addCell(pdfPCell);
+                    index++;
+                }
+                if ((i > 1 && i < 7) || (i == 8)) {
+                    pdfPCell = new PdfPCell(new Phrase(header[index], font));
+                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                    pdfPCell.setRotation(90);
+                    pdfPTable.addCell(pdfPCell);
+                    index++;
+                }
+                if (i == 7) {
+                    PdfPTable r = new PdfPTable(10);
+                    float[] columnWidths1 = new float[]{9.3f, 9.3f, 9.3f, 9.3f, 9.3f, 9.3f, 11.4f, 11.4f, 11.4f, 9.3f};
+                    r.setWidths(columnWidths1);
+                    pdfPCell = new PdfPCell(new Phrase(header[index], font));
+                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                    pdfPCell.setColspan(10);
+                    r.addCell(pdfPCell);
+                    index++;
+                    for (j = 0; j < 10; j++) {
+                        pdfPCell = new PdfPCell(new Phrase(header[index], font));
+                        pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        r.addCell(pdfPCell);
+                        index++;
+                    }
+                    pdfPCell = new PdfPCell(r);
+                    pdfPCell.setPadding(0);
+                    pdfPTable.addCell(pdfPCell);
+                }
+            }
+            index = 1;
+            for (i = 0; i < 9; i++) {
+                if (i < 7 || i == 8) {
+                    pdfPCell = new PdfPCell(new Phrase(String.valueOf(index), fontbd));
+                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                    pdfPTable.addCell(pdfPCell);
+                    index++;
+                }
+                else {
+                    PdfPTable num = new PdfPTable(10);
+                    float[] columnWidths1 = new float[]{9.3f, 9.3f, 9.3f, 9.3f, 9.3f, 9.3f, 11.4f, 11.4f, 11.4f, 9.3f};
+                    num.setWidths(columnWidths1);
+                    for (j = 0; j < 10; j++) {
+                        pdfPCell = new PdfPCell(new Phrase(String.valueOf(index), fontbd));
+                        pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        num.addCell(pdfPCell);
+                        index++;
+                    }
+                    pdfPCell = new PdfPCell(num);
+                    pdfPCell.setPadding(0);
+                    pdfPTable.addCell(pdfPCell);
+                }
+            }
+            paragraph.add(pdfPTable);
+            document.add(paragraph);
+        }catch (Exception e) {
+            Log.e("createTableInsulation", e.toString());
         }
     }
 

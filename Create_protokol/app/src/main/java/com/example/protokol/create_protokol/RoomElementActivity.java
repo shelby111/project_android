@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class RoomElementActivity extends AppCompatActivity {
@@ -43,10 +44,10 @@ public class RoomElementActivity extends AppCompatActivity {
                               "Проверил:                 _____________________     ___________    _____________" + "\n" +
                               "                                           (Должность)                    (Подпись)          (Ф.И.О.)";
     private TemplatePDF templatePDF;
-    DBHelper dbHelper;
+    private DBHelper dbHelper;
     private static final String[] elements = new String[]{"Розетка с з.к.", "Розетка без з.к.", "Системный блок", "Сетевой фильтр 5 гн", "Сетевой фильтр 6 гн", "Удлинитель с з.к. 5 гн", "Удлинитель без з.к.", "Принтер", "МФУ", "Блок розеток с з.к. 2 гн", "Копир. аппарат", "СВЧ-печь", "Холодильник"};
-    int countroom = 0;
-    int roomIdActive;
+    private int countroom = 0;
+    private int roomIdActive;
     private String[] soprot = {"0,02","0,03","0,04"} ;
     private ArrayList<String[]>getClients(){
         ArrayList<String[]>rows = new ArrayList<>();
@@ -428,15 +429,14 @@ public class RoomElementActivity extends AppCompatActivity {
                         });
                         builder2.setNegativeButton("Изменить", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
-                                AlertDialog.Builder alert = new AlertDialog.Builder(RoomElementActivity.this);
-                                alert.setCancelable(false);
-                                alert.setTitle("Введите новое название комнаты:");
+                                AlertDialog.Builder alert1 = new AlertDialog.Builder(RoomElementActivity.this);
+                                alert1.setCancelable(false);
+                                alert1.setTitle("Введите новое название комнаты:");
                                 final EditText input = new EditText(RoomElementActivity.this);
-                                alert.setView(input);
-                                alert.setPositiveButton("Изменить", new DialogInterface.OnClickListener() {
+                                alert1.setView(input);
+                                alert1.setPositiveButton("Изменить", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        final String namer = input.getText().toString();
+                                        String namer = input.getText().toString();
                                         ContentValues uppname = new ContentValues();
                                         uppname.put(DBHelper.KEY_NAME, namer);
                                         database.update(DBHelper.TABLE_ROOMS,
@@ -450,13 +450,12 @@ public class RoomElementActivity extends AppCompatActivity {
                                         toast1.show();
                                     }
                                 });
-                                alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                alert1.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
                                     }
                                 });
-                                alert.show();
-
+                                alert1.show();
                             }
                         });
                         AlertDialog dialog2 = builder2.create();
@@ -492,6 +491,8 @@ public class RoomElementActivity extends AppCompatActivity {
                         alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String namefile = input.getText().toString();
+                                if (namefile.equals(""))
+                                    namefile = null;
                                 opPFD(database, namefile);
                             }
                         });
@@ -513,7 +514,7 @@ public class RoomElementActivity extends AppCompatActivity {
     //ДОБАВЛЕНИЕ В PDF ЗАГОЛОВКОВ
     public void start (String namefile) {
         templatePDF = new TemplatePDF(getApplicationContext());
-        templatePDF.openDocument(namefile);
+        templatePDF.openDocument(namefile, false);
         templatePDF.addMetaData("Protokol", "Item", "Company");
         templatePDF.addTitles("РЕЗУЛЬТАТЫ", "проверки наличия цепи между заземленными установками и элементами заземленной установки");
         templatePDF.addParagraph(date);
@@ -547,12 +548,14 @@ public class RoomElementActivity extends AppCompatActivity {
 
     //ОТКРЫТИЕ PDF
     public void opPFD(SQLiteDatabase database, String namefile) {
+        ArrayList<String> element = new ArrayList<>();
+        ArrayList<ArrayList> elements = new ArrayList<>();
         if (namefile == null)
             namefile = "TepmlatePDF";
         final ArrayList<String> NZ = new ArrayList<>();
         start(namefile);
         int numb_rooms = getCountroom(database);
-        int room_chek = 0, rid, count = 1;
+        int room_chek = 0, rid, count = 1, indEL = 0;
         String res;
         Cursor cursor = database.rawQuery("select * from rooms as r join elements as e on e.room_id = r._id order by e.room_id", new String[] { });
         if (cursor.moveToFirst()) {
@@ -564,9 +567,12 @@ public class RoomElementActivity extends AppCompatActivity {
             do {
                 rid = cursor.getInt(elidroomIndex);
                 if ((rid != room_chek) && (rid <= numb_rooms)){
+                    templatePDF.addElement(elements);
+                    elements = new ArrayList<>();
                     count = 0;
                     room_chek++;
                     templatePDF.addRoom(cursor.getString(roomnameIndex), String.valueOf(room_chek) + ". ");
+                    templatePDF.addElement(elements);
                 }
                 count++;
                 if (cursor.getString(elsoprIndex).equals("Н.З.")){
@@ -575,9 +581,16 @@ public class RoomElementActivity extends AppCompatActivity {
                 }
                 else
                     res = "cоответсвует";
-                String[]element = {String.valueOf(count), cursor.getString(elnameIndex), cursor.getString(elnumberIndex), "0,05", cursor.getString(elsoprIndex), res};
-                templatePDF.addElement(element);
+                element.add(String.valueOf(count));
+                element.add(cursor.getString(elnameIndex));
+                element.add(cursor.getString(elnumberIndex));
+                element.add("0,05");
+                element.add(cursor.getString(elsoprIndex));
+                element.add(res);
+                elements.add(element);
+                element = new ArrayList<>();
             } while (cursor.moveToNext());
+            templatePDF.addElement(elements);
         }
         cursor.close();
         String joinedNZ = TextUtils.join("; ", NZ);
@@ -612,14 +625,14 @@ public class RoomElementActivity extends AppCompatActivity {
 
                     //НАЗВАНИЕ
                     if (which == 0) {
+                        //ВЫБОР НАЗВАНИЯ
                         AlertDialog.Builder alert = new AlertDialog.Builder(RoomElementActivity.this);
                         alert.setCancelable(false);
-                        alert.setTitle("Введите новое название элемента:");
-                        final EditText input = new EditText(RoomElementActivity.this);
-                        alert.setView(input);
-                        alert.setPositiveButton("Изменить", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                final String nameel = input.getText().toString();
+                        alert.setTitle("Выберете новое название комнаты:");
+                        alert.setItems(elements, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String nameel = elements[which];
                                 ContentValues uppname = new ContentValues();
                                 uppname.put(DBHelper.EL_NAME, nameel);
                                 database.update(DBHelper.TABLE_ELEMENTS,
@@ -630,6 +643,37 @@ public class RoomElementActivity extends AppCompatActivity {
                                 Toast toast1 = Toast.makeText(getApplicationContext(),
                                         "Название изменено: " + nameel, Toast.LENGTH_SHORT);
                                 toast1.show();
+                            }
+                        });
+                        alert.setPositiveButton("Ввести самому", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //ВВОД НАЗВАНИЯ
+                                AlertDialog.Builder alert1 = new AlertDialog.Builder(RoomElementActivity.this);
+                                alert1.setCancelable(false);
+                                alert1.setTitle("Введите новое название комнаты:");
+                                final EditText input = new EditText(RoomElementActivity.this);
+                                alert1.setView(input);
+                                alert1.setPositiveButton("Изменить", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        String nameel = input.getText().toString();
+                                        ContentValues uppname = new ContentValues();
+                                        uppname.put(DBHelper.EL_NAME, nameel);
+                                        database.update(DBHelper.TABLE_ELEMENTS,
+                                                uppname,
+                                                "_id = ?",
+                                                new String[] {String.valueOf(elid)});
+                                        redactor(database, elid, elr);
+                                        Toast toast1 = Toast.makeText(getApplicationContext(),
+                                                "Название изменено: " + nameel, Toast.LENGTH_SHORT);
+                                        toast1.show();
+                                    }
+                                });
+                                alert1.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        redactor(database, elid, elr);
+                                    }
+                                });
+                                alert1.show();
                             }
                         });
                         alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
