@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         database.delete(DBHelper.TABLE_ROOMS, null, null);
                         database.delete(DBHelper.TABLE_ELEMENTS, null, null);
+                        database.delete(DBHelper.TABLE_LINE_ROOMS, null, null);
+                        database.delete(DBHelper.TABLE_LINES, null, null);
+                        database.delete(DBHelper.TABLE_GROUPS, null, null);
                     }
                 });
                 builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 9;
     public static final String DATABLE_NAME = "contactDB";
 
     //ITEM1
@@ -39,6 +39,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //table5
     public static final String TABLE_GROUPS = "groups";
+    public static final String GR_LINE_ID = "grline_id";
+    public static final String GR_LNR_ID = "grlnr_id";
     public static final String GR_ID = "_id";
     public static final String GR_NAME = "name_group";
     public static final String GR_U1 = "u1";
@@ -56,7 +58,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String GR_B_PE = "b_pe";
     public static final String GR_C_PE = "c_pe";
     public static final String GR_N_PE = "n_pe";
-    public static final String GR_RES = "result";
 
     public DBHelper(Context context) {
         super(context, DATABLE_NAME, null, DATABASE_VERSION);
@@ -76,7 +77,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_LINES + "(" + LN_ID + " integer primary key AUTOINCREMENT," + LN_NAME +
                 " text, " + LN_ID_ROOM + " integer" + ");");
 
-        db.execSQL("create table " + TABLE_GROUPS + "(" + GR_ID + " integer primary key AUTOINCREMENT," + GR_NAME +
+        db.execSQL("create table " + TABLE_GROUPS + "(" + GR_ID + " integer primary key AUTOINCREMENT," + GR_LINE_ID + " integer," + GR_LNR_ID + " integer," + GR_NAME +
                 " text," + GR_U1 + " integer,"  + GR_MARK + " text," + GR_NUMBER + " text," + GR_U2 + " integer," + GR_R + " integer," + GR_A_B + " integer," + GR_B_C + " integer," +
                 GR_C_A + " integer," + GR_A_N + " integer," + GR_B_N + " integer," + GR_C_N + " integer," + GR_A_PE + " integer," + GR_B_PE + " integer," + GR_C_PE + " integer," +
                 GR_N_PE + " integer" + ");");
