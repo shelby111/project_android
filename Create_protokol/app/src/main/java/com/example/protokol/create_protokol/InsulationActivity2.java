@@ -3,6 +3,7 @@ package com.example.protokol.create_protokol;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -41,11 +42,11 @@ public class InsulationActivity2 extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        TextView room = (TextView)findViewById(R.id.textView6);
-        final ListView lines = (ListView)findViewById(R.id.lines);
+        TextView room = findViewById(R.id.textView6);
+        final ListView lines = findViewById(R.id.groups);
         Button addLine = findViewById(R.id.button9);
         Button pdf = findViewById(R.id.button8);
-        String nameRoom = getIntent().getStringExtra("nameRoom");
+        final String nameRoom = getIntent().getStringExtra("nameRoom");
         final long idRoom = getIntent().getLongExtra("idRoom", 0);
 
         //ВЫВОД КОМНАТЫ
@@ -75,7 +76,7 @@ public class InsulationActivity2 extends AppCompatActivity {
                         contentValues.put(DBHelper.LN_NAME, nameLine);
                         contentValues.put(DBHelper.LN_ID_ROOM, idRoom);
                         database.insert(DBHelper.TABLE_LINES, null, contentValues);
-                        //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
+                        //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ЩИТОВ
                         addSpisokLines(database, lines, idRoom);
                         Toast toast = Toast.makeText(getApplicationContext(),
                                 "Щит <" + nameLine + "> добавлен", Toast.LENGTH_SHORT);
@@ -111,7 +112,12 @@ public class InsulationActivity2 extends AppCompatActivity {
 
                         //ПЕРЕЙТИ К ГРУППАМ
                         if (which == 0) {
-
+                            Intent intent = new Intent("android.intent.action.Insulation3");
+                            intent.putExtra("nameRoom", nameRoom);
+                            intent.putExtra("idRoom", idRoom);
+                            intent.putExtra("nameLine", ((TextView) view).getText().toString());
+                            intent.putExtra("idLine", lineId);
+                            startActivity(intent);
                         }
 
                         //ИЗМЕНИТЬ НАЗВАНИЕ
@@ -130,7 +136,7 @@ public class InsulationActivity2 extends AppCompatActivity {
                                             uppname,
                                             "_id = ?",
                                             new String[] {String.valueOf(lineId)});
-                                    //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
+                                    //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ЩИТОВ
                                     addSpisokLines(database, lines, idRoom);
                                     Toast toast1 = Toast.makeText(getApplicationContext(),
                                             "Название изменено: " + namel, Toast.LENGTH_SHORT);
@@ -183,12 +189,11 @@ public class InsulationActivity2 extends AppCompatActivity {
                                         countlines = countlines - 1;
                                     }
                                     cursor.close();
-                                    //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
+                                    //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ЩИТОВ
                                     addSpisokLines(database, lines, idRoom);
                                     Toast toast2 = Toast.makeText(getApplicationContext(),
                                             "Щит <" + ((TextView) view).getText() + "> удален", Toast.LENGTH_SHORT);
                                     toast2.show();
-
                                 }
                             });
                             builder4.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {

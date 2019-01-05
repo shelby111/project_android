@@ -40,6 +40,20 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".InsulationActivity3">
+            <intent-filter>
+                <action android:name="android.intent.action.Insulation3" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".InsulationActivity4">
+            <intent-filter>
+                <action android:name="android.intent.action.Insulation4" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
