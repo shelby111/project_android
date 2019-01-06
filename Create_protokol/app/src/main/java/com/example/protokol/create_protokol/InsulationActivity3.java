@@ -82,7 +82,7 @@ public class InsulationActivity3 extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, final View view, final int position, final long id) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
                 alert.setTitle(((TextView) view).getText());
-                String arrayMenu[] = {"Изменить", "Удалить группу"};
+                String arrayMenu[] = {"Редактировать", "Удалить группу"};
                 alert.setItems(arrayMenu, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

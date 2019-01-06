@@ -49,7 +49,7 @@ public class RoomElementActivity extends AppCompatActivity {
     private int countroom = 0;
     private int roomIdActive;
     private String[] soprot = {"0,02","0,03","0,04"} ;
-    private ArrayList<String[]>getClients(){
+    private ArrayList<String[]>getNumbers(){
         ArrayList<String[]>rows = new ArrayList<>();
         rows.add(new String[]{"1","2","3","4","5","6"});
         return rows;
@@ -522,7 +522,7 @@ public class RoomElementActivity extends AppCompatActivity {
         templatePDF.addParagraph(uslovia);
         templatePDF.addZag(zag2);
         templatePDF.addParagraph(line);
-        templatePDF.createTable(header, getClients());
+        templatePDF.createTable(header, getNumbers());
     }
 
     //ГЕНЕРАТОР

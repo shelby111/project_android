@@ -47,7 +47,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".InsulationActivity4">
+        <activity android:name=".InsulationActivity4" android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.Insulation4" />
 

@@ -42,7 +42,7 @@ public class InsulationActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        final ListView rooms = (ListView)findViewById(R.id.groups);
+        final ListView rooms = findViewById(R.id.rooms);
         Button addRoom = findViewById(R.id.button9);
         Button pdf = findViewById(R.id.button8);
 

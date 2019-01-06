@@ -43,7 +43,7 @@ public class InsulationActivity2 extends AppCompatActivity {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         TextView room = findViewById(R.id.textView6);
-        final ListView lines = findViewById(R.id.groups);
+        final ListView lines = findViewById(R.id.lines);
         Button addLine = findViewById(R.id.button9);
         Button pdf = findViewById(R.id.button8);
         final String nameRoom = getIntent().getStringExtra("nameRoom");
