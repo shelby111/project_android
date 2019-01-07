@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class InsulationActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
+        ImageView back = findViewById(R.id.imageView);
         final ListView rooms = findViewById(R.id.rooms);
         Button addRoom = findViewById(R.id.button9);
         Button pdf = findViewById(R.id.button8);
@@ -51,6 +53,15 @@ public class InsulationActivity extends AppCompatActivity {
 
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
         addSpisokRooms(database, rooms);
+
+        //НАЗАД
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InsulationActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //ДОБАВИТЬ КОМНАТУ
         addRoom.setOnClickListener(new View.OnClickListener() {

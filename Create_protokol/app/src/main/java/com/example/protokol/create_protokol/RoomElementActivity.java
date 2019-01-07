@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.strictmode.SqliteObjectLeakedViolation;
@@ -63,6 +64,7 @@ public class RoomElementActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
+        ImageView back = findViewById(R.id.imageView);
         final AutoCompleteTextView actv2 = findViewById(R.id.actv2);
         final TextView nroom = findViewById(R.id.textView3);
         final Button choice = findViewById(R.id.button5);
@@ -86,6 +88,15 @@ public class RoomElementActivity extends AppCompatActivity {
             public void onClick(View view) {
                 hideKeyboard(RoomElementActivity.this);
                 actv2.showDropDown();
+            }
+        });
+
+        //НАЗАД
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RoomElementActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 

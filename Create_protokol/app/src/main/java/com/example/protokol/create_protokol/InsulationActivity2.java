@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class InsulationActivity2 extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
+        ImageView back = findViewById(R.id.imageView);
         TextView room = findViewById(R.id.textView6);
         final ListView lines = findViewById(R.id.lines);
         Button addLine = findViewById(R.id.button9);
@@ -57,6 +59,16 @@ public class InsulationActivity2 extends AppCompatActivity {
 
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ЩИТОВ
         addSpisokLines(database, lines, idRoom);
+
+        //НАЗАД
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent("android.intent.action.Insulation");
+                startActivity(intent);
+            }
+        });
+
 
         //ДОБАВИТЬ ЩИТ
         addLine.setOnClickListener(new View.OnClickListener() {

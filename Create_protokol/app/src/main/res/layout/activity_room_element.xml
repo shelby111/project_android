@@ -60,6 +60,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="73dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/back" />
+
     <View
         android:id="@+id/view"
         android:layout_width="300dp"
