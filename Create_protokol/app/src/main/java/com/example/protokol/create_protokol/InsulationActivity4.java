@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,10 +47,12 @@ public class InsulationActivity4 extends AppCompatActivity {
         Button chooseWorkU = findViewById(R.id.button13);
         final TextView u = findViewById(R.id.textView16);
         Button chooseU = findViewById(R.id.button14);
-        final TextView phase = findViewById(R.id.textView17);
-        Button choosePhase = findViewById(R.id.button15);
+        final TextView r = findViewById(R.id.textView17);
+        Button chooseR = findViewById(R.id.button15);
+        final TextView phase = findViewById(R.id.textView18);
+        Button choosePhase = findViewById(R.id.button16);
         final EditText number = findViewById(R.id.editText2);
-        Button save = findViewById(R.id.button16);
+        Button save = findViewById(R.id.button17);
 
         final String nameRoom = getIntent().getStringExtra("nameRoom");
         final long idRoom = getIntent().getLongExtra("idRoom", 0);
@@ -68,25 +71,20 @@ public class InsulationActivity4 extends AppCompatActivity {
             //ЗАПРОС В БД(ПОЛУЧЕНИЕ ИНФОРМАЦИИ О ГРУППЕ)
             Cursor cursor = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_ID, DBHelper.GR_MARK,
                     DBHelper.GR_VEIN, DBHelper.GR_SECTION, DBHelper.GR_U1,
-                    DBHelper.GR_U2, DBHelper.GR_A_B, DBHelper.GR_B_C, DBHelper.GR_C_A,
-                    DBHelper.GR_A_N, DBHelper.GR_B_N, DBHelper.GR_C_N, DBHelper.GR_A_PE,
-                    DBHelper.GR_B_PE, DBHelper.GR_C_PE, DBHelper.GR_N_PE}, "_id = ?", new String[] {String.valueOf(idGroup)}, null, null, null);
+                    DBHelper.GR_U2, DBHelper.GR_R, DBHelper.GR_PHASE, DBHelper.GR_A_B,
+                    DBHelper.GR_A_N, DBHelper.GR_B_N, DBHelper.GR_C_N}, "_id = ?", new String[] {String.valueOf(idGroup)}, null, null, null);
             if (cursor.moveToFirst()) {
                 int markIndex = cursor.getColumnIndex(DBHelper.GR_MARK);
                 int veinIndex = cursor. getColumnIndex(DBHelper.GR_VEIN);
                 int sectionIndex = cursor. getColumnIndex(DBHelper.GR_SECTION);
                 int workUIndex = cursor. getColumnIndex(DBHelper.GR_U1);
                 int uIndex = cursor. getColumnIndex(DBHelper.GR_U2);
+                int rIndex = cursor. getColumnIndex(DBHelper.GR_R);
+                int phaseIndex = cursor. getColumnIndex(DBHelper.GR_PHASE);
                 int a_bIndex = cursor. getColumnIndex(DBHelper.GR_A_B);
-                int b_cIndex = cursor. getColumnIndex(DBHelper.GR_B_C);
-                int c_aIndex = cursor. getColumnIndex(DBHelper.GR_C_A);
                 int a_nIndex = cursor. getColumnIndex(DBHelper.GR_A_N);
                 int b_nIndex = cursor. getColumnIndex(DBHelper.GR_B_N);
                 int c_nIndex = cursor. getColumnIndex(DBHelper.GR_C_N);
-                int a_peIndex = cursor. getColumnIndex(DBHelper.GR_A_PE);
-                int b_peIndex = cursor. getColumnIndex(DBHelper.GR_B_PE);
-                int c_peIndex = cursor. getColumnIndex(DBHelper.GR_C_PE);
-                int n_peIndex = cursor. getColumnIndex(DBHelper.GR_N_PE);
                 do {
                     //ЗАПОЛНЕНИЕ ДАННЫХ
                     mark.setText("Марка: " + cursor.getString(markIndex));
@@ -97,59 +95,34 @@ public class InsulationActivity4 extends AppCompatActivity {
                         section.setText("Сеченеие: -");
                         workU.setText("Рабочее напряжение: -");
                         u.setText("Напряжение мегаомметра: -");
+                        r.setText("Сопротивление: -");
                         phase.setText("Фаза: -");
                         number.setText("-");
                         break;
                     }
                     else {
+                        String namePhase = cursor.getString(phaseIndex);
                         vein.setText("Кол-во жил: " + cursor.getString(veinIndex));
                         section.setText("Сечение: " + cursor.getString(sectionIndex));
                         workU.setText("Рабочее напряжение: " + cursor.getString(workUIndex));
                         u.setText("Напряжение мегаомметра: " + cursor.getString(uIndex));
-                        //ВЫБОР ФАЗЫ
-                        String a_b = cursor.getString(a_bIndex);
-                        String b_c = cursor.getString(b_cIndex);
-                        String c_a = cursor.getString(c_aIndex);
-                        String a_n = cursor.getString(a_nIndex);
-                        String b_n = cursor.getString(b_nIndex);
-                        String c_n = cursor.getString(c_nIndex);
-                        String a_pe = cursor.getString(a_peIndex);
-                        String b_pe = cursor.getString(b_peIndex);
-                        String c_pe = cursor.getString(c_peIndex);
-                        String n_pe = cursor.getString(n_peIndex);
-                        if ((a_b.equals("-") && b_c.equals("-") && c_a.equals("-") &&
-                            !a_n.equals("-") && b_n.equals("-") && c_n.equals("-") &&
-                            !a_pe.equals("-") && b_pe.equals("-") && c_pe.equals("-") && !n_pe.equals("-")) ||
-                            (a_b.equals("-") && b_c.equals("-") && c_a.equals("-") &&
-                            !a_n.equals("-") && b_n.equals("-") && c_n.equals("-") &&
-                            a_pe.equals("-") && b_pe.equals("-") && c_pe.equals("-") && n_pe.equals("-"))) {
-                            phase.setText("Фаза: A");
-                            number.setText(a_n);
+                        r.setText("Сопротивление: " + cursor.getString(rIndex));
+                        phase.setText("Фаза: " + namePhase);
+                        //ЗАПОЛНЕНИЕ ЗНАЧЕНИЯ
+                        switch (namePhase) {
+                            case "A":
+                                number.setText(cursor.getString(a_nIndex));
+                                break;
+                            case "B":
+                                number.setText(cursor.getString(b_nIndex));
+                                break;
+                            case "C":
+                                number.setText(cursor.getString(c_nIndex));
+                                break;
+                            default:
+                                number.setText(cursor.getString(a_bIndex));
+                                break;
                         }
-                        else
-                            if ((a_b.equals("-") && b_c.equals("-") && c_a.equals("-") &&
-                                a_n.equals("-") && !b_n.equals("-") && c_n.equals("-") &&
-                                a_pe.equals("-") && !b_pe.equals("-") && c_pe.equals("-") && !n_pe.equals("-")) ||
-                                (a_b.equals("-") && b_c.equals("-") && c_a.equals("-") &&
-                                a_n.equals("-") && !b_n.equals("-") && c_n.equals("-") &&
-                                a_pe.equals("-") && b_pe.equals("-") && c_pe.equals("-") && n_pe.equals("-"))) {
-                                phase.setText("Фаза: B");
-                                number.setText(b_n);
-                            }
-                            else
-                                if ((a_b.equals("-") && b_c.equals("-") && c_a.equals("-") &&
-                                    a_n.equals("-") && b_n.equals("-") && !c_n.equals("-") &&
-                                    a_pe.equals("-") && b_pe.equals("-") && !c_pe.equals("-") && !n_pe.equals("-")) ||
-                                    (a_b.equals("-") && b_c.equals("-") && c_a.equals("-") &&
-                                    a_n.equals("-") && b_n.equals("-") && !c_n.equals("-") &&
-                                    a_pe.equals("-") && b_pe.equals("-") && c_pe.equals("-") && n_pe.equals("-"))) {
-                                    phase.setText("Фаза: C");
-                                    number.setText(c_n);
-                                }
-                                else {
-                                    phase.setText("Фаза: -");
-                                    number.setText(a_b);
-                                }
                     }
                 } while (cursor.moveToNext());
             }
@@ -163,18 +136,20 @@ public class InsulationActivity4 extends AppCompatActivity {
                 if (isChecked) {
                     mark.setText("Марка: резерв");
                     vein.setText("Кол-во жил: -");
-                    section.setText("Сеченеие: -");
+                    section.setText("Сечение: -");
                     workU.setText("Рабочее напряжение: -");
                     u.setText("Напряжение мегаомметра: -");
+                    r.setText("Сопротивление: -");
                     phase.setText("Фаза: -");
                     number.setText("-");
                 }
                 else {
                     mark.setText("Марка: Не выбрана");
                     vein.setText("Кол-во жил: Не выбрано");
-                    section.setText("Сеченеие: Не выбрано");
+                    section.setText("Сечение: Не выбрано");
                     workU.setText("Рабочее напряжение: Не выбрано");
                     u.setText("Напряжение мегаомметра: 1000");
+                    r.setText("Сопротивление: 0,5");
                     phase.setText("Фаза: Не выбрана");
                     number.setText("");
                 }
@@ -193,6 +168,27 @@ public class InsulationActivity4 extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mark.setText("Марка: " + marks[which]);
+                        }
+                    });
+                    alert.setPositiveButton("Ввести", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            AlertDialog.Builder alert1 = new AlertDialog.Builder(InsulationActivity4.this);
+                            alert1.setCancelable(false);
+                            alert1.setTitle("Введите марку:");
+                            final EditText input = new EditText(InsulationActivity4.this);
+                            alert1.setView(input);
+                            alert1.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String nameMark = input.getText().toString();
+                                    mark.setText("Марка: " + nameMark);
+                                }
+                            });
+                            alert1.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                }
+                            });
+                            alert1.show();
                         }
                     });
                     alert.show();
@@ -257,6 +253,28 @@ public class InsulationActivity4 extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             section.setText("Сечение: " + sectoins[which]);
+                        }
+                    });
+                    alert.setPositiveButton("Ввести", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            AlertDialog.Builder alert1 = new AlertDialog.Builder(InsulationActivity4.this);
+                            View myView = getLayoutInflater().inflate(R.layout.dialog_for_section,null);
+                            alert1.setCancelable(false);
+                            alert1.setTitle("Введите сечение:");
+                            final EditText input = (EditText) myView.findViewById(R.id.editText2);
+                            alert1.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String numberSection = input.getText().toString();
+                                    section.setText("Сечение: " + numberSection);
+                                }
+                            });
+                            alert1.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                }
+                            });
+                            alert1.setView(myView);
+                            alert1.show();
                         }
                     });
                     alert.show();
@@ -338,6 +356,37 @@ public class InsulationActivity4 extends AppCompatActivity {
             }
         });
 
+        //ВЫБОР СОПРОТИВЛЕНИЯ
+        chooseR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!reserve.isChecked()) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
+                    alert.setTitle("Выберете сопротивление:");
+                    final String arrR[] = {"0,5", "1"};
+                    alert.setItems(arrR, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            r.setText("Сопротивление: " + arrR[which]);
+                        }
+                    });
+                    alert.show();
+                }
+                else {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
+                    alert.setCancelable(false);
+                    alert.setMessage("Выбор сопротивления не доступен, так как группа резервная. " +
+                            "Чтобы выбрать сопротивление, нажмите на ползунок, сделав его неактивным");
+                    alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        }
+                    });
+                    alert.show();
+                }
+            }
+        });
+
         //ВЫБОР ФАЗЫ
         choosePhase.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -387,11 +436,20 @@ public class InsulationActivity4 extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String textName = group.getText().toString();
+                String textMark = mark.getText().toString();
+                String textVein = vein.getText().toString();
+                String textSection = section.getText().toString();
+                String textWorkU = workU.getText().toString();
+                String textU = u.getText().toString();
+                String textR = r.getText().toString();
+                String textPhase = phase.getText().toString();
                 String numb = number.getText().toString();
                 //ПРОВЕРКА НА ВВОД ВСЕХ ДАННЫХ
-                if (numb.equals("") || mark.getText().equals("Марка: Не выбрана") || vein.getText().equals("Кол-во жил: Не выбрано") ||
-                    section.getText().equals("Сечение: Не выбрано") || workU.getText().equals("Рабочее напряжение: Не выбрано") ||
-                    phase.getText().equals("Фаза: Не выбрана")) {
+                if (numb.equals("") || textMark.equals("Марка: Не выбрана") || textVein.equals("Кол-во жил: Не выбрано") ||
+                    textSection.equals("Сечение: Не выбрано") || textWorkU.equals("Рабочее напряжение: Не выбрано") ||
+                    textPhase.equals("Фаза: Не выбрана") || (textVein.equals("Кол-во жил: 2") && textPhase.equals("Фаза: -")) ||
+                    (textVein.equals("Кол-во жил: 3") && textPhase.equals("Фаза: -"))) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
                     alert.setCancelable(false);
                     alert.setMessage("Заполните все поля!");
@@ -402,11 +460,11 @@ public class InsulationActivity4 extends AppCompatActivity {
                     });
                     alert.show();
                 }
-                else
-                    if (!numb.equals("-") && 300 > Integer.parseInt(numb)) {
+                else {
+                    if (numb.contains(",") && Double.parseDouble(numb.replace(",",".")) > 1) {
                         AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
                         alert.setCancelable(false);
-                        alert.setMessage("Вводимое значение должно быть не меньше 300");
+                        alert.setMessage("Число не может быть дробным, если оно больше единицы!");
                         alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -424,13 +482,14 @@ public class InsulationActivity4 extends AppCompatActivity {
                             contentValues.put(DBHelper.GR_LINE_ID, idLine);
                             contentValues.put(DBHelper.GR_LNR_ID, idRoom);
                             contentValues.put(DBHelper.GR_ID, idGroup);
-                            contentValues.put(DBHelper.GR_NAME, "Гр " + Integer.parseInt(group.getText().toString().substring(8)));
+                            contentValues.put(DBHelper.GR_NAME, "Гр " + Integer.parseInt(textName.substring(8)));
                             contentValues.put(DBHelper.GR_U1, "-");
                             contentValues.put(DBHelper.GR_MARK, "резерв");
                             contentValues.put(DBHelper.GR_VEIN, "-");
                             contentValues.put(DBHelper.GR_SECTION, "-");
                             contentValues.put(DBHelper.GR_U2, "-");
                             contentValues.put(DBHelper.GR_R, "-");
+                            contentValues.put(DBHelper.GR_PHASE, "-");
                             contentValues.put(DBHelper.GR_A_B, "-");
                             contentValues.put(DBHelper.GR_B_C, "-");
                             contentValues.put(DBHelper.GR_C_A, "-");
@@ -441,22 +500,31 @@ public class InsulationActivity4 extends AppCompatActivity {
                             contentValues.put(DBHelper.GR_B_PE, "-");
                             contentValues.put(DBHelper.GR_C_PE, "-");
                             contentValues.put(DBHelper.GR_N_PE, "-");
+                            contentValues.put(DBHelper.GR_CONCLUSION, "-");
                             database.insert(DBHelper.TABLE_GROUPS, null, contentValues);
-                        }
-                        else {
+                        } else {
+                            String namePhase = textPhase.substring(6);
+                            String numberVein = textVein.substring(12);
+                            String numberR = textR.substring(15);
+                            //ЗАПОЛНЕНИЕ НОВОЙ СТРОКИ
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(DBHelper.GR_LINE_ID, idLine);
                             contentValues.put(DBHelper.GR_LNR_ID, idRoom);
                             contentValues.put(DBHelper.GR_ID, idGroup);
-                            contentValues.put(DBHelper.GR_NAME, "Гр " + Integer.parseInt(group.getText().toString().substring(8)));
-                            contentValues.put(DBHelper.GR_U1, workU.getText().toString().substring(20));
-                            contentValues.put(DBHelper.GR_MARK, mark.getText().toString().substring(7));
-                            contentValues.put(DBHelper.GR_VEIN, vein.getText().toString().substring(12));
-                            contentValues.put(DBHelper.GR_SECTION, section.getText().toString().substring(9));
-                            contentValues.put(DBHelper.GR_U2, u.getText().toString().substring(24));
-                            contentValues.put(DBHelper.GR_R, "0,05");
+                            contentValues.put(DBHelper.GR_NAME, "Гр " + Integer.parseInt(textName.substring(8)));
+                            contentValues.put(DBHelper.GR_U1, textWorkU.substring(20));
+                            contentValues.put(DBHelper.GR_MARK, textMark.substring(7));
+                            contentValues.put(DBHelper.GR_VEIN, numberVein);
+                            contentValues.put(DBHelper.GR_SECTION, textSection.substring(9));
+                            contentValues.put(DBHelper.GR_U2, textU.substring(24));
+                            contentValues.put(DBHelper.GR_R, numberR);
+                            contentValues.put(DBHelper.GR_PHASE, namePhase);
+                            if (Double.parseDouble(numb.replace(",", ".")) >= Double.parseDouble(numberR.replace(",", ".")))
+                                contentValues.put(DBHelper.GR_CONCLUSION, "соответств.");
+                            else
+                                contentValues.put(DBHelper.GR_CONCLUSION, "не соотв.");
                             //2 ЖИЛЫ
-                            if (vein.getText().toString().substring(12).equals("2")) {
+                            if (numberVein.equals("2")) {
                                 contentValues.put(DBHelper.GR_A_B, "-");
                                 contentValues.put(DBHelper.GR_B_C, "-");
                                 contentValues.put(DBHelper.GR_C_A, "-");
@@ -464,80 +532,80 @@ public class InsulationActivity4 extends AppCompatActivity {
                                 contentValues.put(DBHelper.GR_B_PE, "-");
                                 contentValues.put(DBHelper.GR_C_PE, "-");
                                 contentValues.put(DBHelper.GR_N_PE, "-");
-                                if (phase.getText().toString().substring(6).equals("A")) {
+                                if (namePhase.equals("A")) {
                                     contentValues.put(DBHelper.GR_A_N, numb);
                                     contentValues.put(DBHelper.GR_B_N, "-");
                                     contentValues.put(DBHelper.GR_C_N, "-");
                                 }
-                                if (phase.getText().toString().substring(6).equals("B")) {
+                                if (namePhase.equals("B")) {
                                     contentValues.put(DBHelper.GR_A_N, "-");
                                     contentValues.put(DBHelper.GR_B_N, numb);
                                     contentValues.put(DBHelper.GR_C_N, "-");
                                 }
-                                if (phase.getText().toString().substring(6).equals("C")) {
+                                if (namePhase.equals("C")) {
                                     contentValues.put(DBHelper.GR_A_N, "-");
                                     contentValues.put(DBHelper.GR_B_N, "-");
                                     contentValues.put(DBHelper.GR_C_N, numb);
                                 }
                             }
                             //3 ЖИЛЫ
-                            if (vein.getText().toString().substring(12).equals("3")) {
+                            if (numberVein.equals("3")) {
                                 contentValues.put(DBHelper.GR_A_B, "-");
                                 contentValues.put(DBHelper.GR_B_C, "-");
                                 contentValues.put(DBHelper.GR_C_A, "-");
-                                if (phase.getText().toString().substring(6).equals("A")) {
+                                if (namePhase.equals("A")) {
                                     contentValues.put(DBHelper.GR_A_N, numb);
                                     contentValues.put(DBHelper.GR_B_N, "-");
                                     contentValues.put(DBHelper.GR_C_N, "-");
-                                    contentValues.put(DBHelper.GR_A_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
+                                    contentValues.put(DBHelper.GR_A_PE, getRandomNumber(numb));
                                     contentValues.put(DBHelper.GR_B_PE, "-");
                                     contentValues.put(DBHelper.GR_C_PE, "-");
-                                    contentValues.put(DBHelper.GR_N_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
+                                    contentValues.put(DBHelper.GR_N_PE, getRandomNumber(numb));
                                 }
-                                if (phase.getText().toString().substring(6).equals("B")) {
+                                if (namePhase.equals("B")) {
                                     contentValues.put(DBHelper.GR_A_N, "-");
                                     contentValues.put(DBHelper.GR_B_N, numb);
                                     contentValues.put(DBHelper.GR_C_N, "-");
                                     contentValues.put(DBHelper.GR_A_PE, "-");
-                                    contentValues.put(DBHelper.GR_B_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
+                                    contentValues.put(DBHelper.GR_B_PE, getRandomNumber(numb));
                                     contentValues.put(DBHelper.GR_C_PE, "-");
-                                    contentValues.put(DBHelper.GR_N_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
+                                    contentValues.put(DBHelper.GR_N_PE, getRandomNumber(numb));
                                 }
-                                if (phase.getText().toString().substring(6).equals("C")) {
+                                if (namePhase.equals("C")) {
                                     contentValues.put(DBHelper.GR_A_N, "-");
                                     contentValues.put(DBHelper.GR_B_N, "-");
                                     contentValues.put(DBHelper.GR_C_N, numb);
                                     contentValues.put(DBHelper.GR_A_PE, "-");
                                     contentValues.put(DBHelper.GR_B_PE, "-");
-                                    contentValues.put(DBHelper.GR_C_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                    contentValues.put(DBHelper.GR_N_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
+                                    contentValues.put(DBHelper.GR_C_PE, getRandomNumber(numb));
+                                    contentValues.put(DBHelper.GR_N_PE, getRandomNumber(numb));
                                 }
                             }
                             //4 ЖИЛЫ
-                            if (vein.getText().toString().substring(12).equals("4")) {
+                            if (numberVein.equals("4")) {
                                 contentValues.put(DBHelper.GR_A_B, numb);
-                                contentValues.put(DBHelper.GR_B_C, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_C_A, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_A_N, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_B_N, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_C_N, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
+                                contentValues.put(DBHelper.GR_B_C, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_C_A, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_A_N, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_B_N, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_C_N, getRandomNumber(numb));
                                 contentValues.put(DBHelper.GR_A_PE, "-");
                                 contentValues.put(DBHelper.GR_B_PE, "-");
                                 contentValues.put(DBHelper.GR_C_PE, "-");
                                 contentValues.put(DBHelper.GR_N_PE, "-");
                             }
                             //5 ЖИЛ
-                            if (vein.getText().toString().substring(12).equals("5")) {
+                            if (numberVein.equals("5")) {
                                 contentValues.put(DBHelper.GR_A_B, numb);
-                                contentValues.put(DBHelper.GR_B_C, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_C_A, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_A_N, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_B_N, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_C_N, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_A_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_B_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_C_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
-                                contentValues.put(DBHelper.GR_N_PE, String.valueOf(getRandomNumber(Integer.parseInt(numb))));
+                                contentValues.put(DBHelper.GR_B_C, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_C_A, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_A_N, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_B_N, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_C_N, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_A_PE, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_B_PE, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_C_PE, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_N_PE, getRandomNumber(numb));
                             }
                             database.insert(DBHelper.TABLE_GROUPS, null, contentValues);
                         }
@@ -552,21 +620,27 @@ public class InsulationActivity4 extends AppCompatActivity {
                         intent.putExtra("idLine", idLine);
                         startActivity(intent);
                     }
+                }
             }
         });
     }
-    
-    public int getRandomNumber(int x) {
+
+    public String getRandomNumber(String x) {
+        if (x.contains(","))
+            return x;
+        int oldNumb = Integer.parseInt(x);
         int random = 0;
         Random generator = new Random();
-        if (300 <= x && x < 500)
-            random = (generator.nextInt(9) - 4) * 50 + x;
-        if (500 <= x && x < 1000)
-            random = (generator.nextInt(5) - 2) * 100 + x;
-        if (1000 <= x && x < 3000 )
-            random = (generator.nextInt(9) - 4) * 100 + x;
-        if (3000 <= x)
-            random = (generator.nextInt(11) - 5) * 200 + x;
-        return random;
+        if (oldNumb < 300)
+            random = oldNumb;
+        if (300 <= oldNumb && oldNumb < 500)
+            random = (generator.nextInt(9) - 4) * 50 + oldNumb;
+        if (500 <= oldNumb && oldNumb < 1000)
+            random = (generator.nextInt(5) - 2) * 100 + oldNumb;
+        if (1000 <= oldNumb && oldNumb < 3000 )
+            random = (generator.nextInt(9) - 4) * 100 + oldNumb;
+        if (3000 <= oldNumb)
+            random = (generator.nextInt(11) - 5) * 200 + oldNumb;
+        return String.valueOf(random);
     }
 }

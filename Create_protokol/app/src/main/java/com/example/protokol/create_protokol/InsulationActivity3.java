@@ -25,17 +25,6 @@ public class InsulationActivity3 extends AppCompatActivity {
     DBHelper dbHelper;
     private int countgroups = 0;
 
-    private String date = "Дата проведения проверки «__» ___________ _______г. ";
-    private String zag = "Климатические условия при проведении измерений";
-    private String uslovia = "Температура воздуха __С. Влажность воздуха __%. Атмосферное давление ___ мм.рт.ст.(бар).";
-    private String zag2 = "Нормативные и технические документы, на соответствие требованиям которых проведена проверка:";
-    private String line = "______________________________________________________________________________________________________________";
-    private String[] header = {"№\nп/п", "Наименование линий, по проекту", "Рабочее\nнапряжение, В", "Марка провода,\nкабеля", "Количество\nжил, сечение\nпровода,\nкабеля, мм кв.",
-            "Напряжение\nмегаомметра, В", "Допустимое\nсопротивление\nизоляции, МОм", "Сопротивление изоляции, МОм", "L1-L2\n(A-B)", "L2-L3\n(В-С)", "L3-L1\n(C-A)", "L1-N\n(A-N)\n(PEN)",
-            "L2-N\n(B-N)\n(PEN)", "L3-N\n(C-N)\n(PEN)", "L1-PE\n(A-PE)", "L2-PE\n(B-PE)", "L3-PE\n(C-PE)", "N-PE", "Вывод о\nсоответствии\nнормативному\nдокументу"};
-    private TemplatePDF templatePDF;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +38,7 @@ public class InsulationActivity3 extends AppCompatActivity {
         TextView line = findViewById(R.id.textView7);
         final ListView groups = findViewById(R.id.groups);
         Button addGroup = findViewById(R.id.button9);
-        Button pdf = findViewById(R.id.button8);
+        Button repeatGroup = findViewById(R.id.button8);
         final String nameRoom = getIntent().getStringExtra("nameRoom");
         final long idRoom = getIntent().getLongExtra("idRoom", 0);
         final String nameLine = getIntent().getStringExtra("nameLine");
@@ -113,18 +102,19 @@ public class InsulationActivity3 extends AppCompatActivity {
                         //ПОСМОТРЕТЬ
                         if (which == 0) {
                             //ПОЛУЧЕНИЕ ИНФОРМАЦИИ О ГРУППЕ
-                            String mark = "", vein = "", section = "", workU = "", r = "", u = "", a_b = "", b_c = "", c_a = "", a_n = "", b_n = "", c_n = "", a_pe = "", b_pe = "", c_pe = "", n_pe = "";
+                            String mark = "", vein = "", section = "", workU = "", r = "", u = "", a_b = "", b_c = "", c_a = "", a_n = "", b_n = "", c_n = "", a_pe = "", b_pe = "", c_pe = "", n_pe = "", conclusion = "";
                             Cursor cursor1 = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_ID, DBHelper.GR_MARK,
                                     DBHelper.GR_VEIN, DBHelper.GR_SECTION, DBHelper.GR_U1,
-                                    DBHelper.GR_U2, DBHelper.GR_A_B, DBHelper.GR_B_C, DBHelper.GR_C_A,
+                                    DBHelper.GR_U2, DBHelper.GR_R, DBHelper.GR_A_B, DBHelper.GR_B_C, DBHelper.GR_C_A,
                                     DBHelper.GR_A_N, DBHelper.GR_B_N, DBHelper.GR_C_N, DBHelper.GR_A_PE,
-                                    DBHelper.GR_B_PE, DBHelper.GR_C_PE, DBHelper.GR_N_PE}, "_id = ?", new String[] {String.valueOf(groupId)}, null, null, null);
+                                    DBHelper.GR_B_PE, DBHelper.GR_C_PE, DBHelper.GR_N_PE, DBHelper.GR_CONCLUSION}, "_id = ?", new String[] {String.valueOf(groupId)}, null, null, null);
                             if (cursor1.moveToFirst()) {
                                 int markIndex = cursor1.getColumnIndex(DBHelper.GR_MARK);
                                 int veinIndex = cursor1. getColumnIndex(DBHelper.GR_VEIN);
                                 int sectionIndex = cursor1. getColumnIndex(DBHelper.GR_SECTION);
                                 int workUIndex = cursor1. getColumnIndex(DBHelper.GR_U1);
                                 int uIndex = cursor1. getColumnIndex(DBHelper.GR_U2);
+                                int rIndex = cursor1. getColumnIndex(DBHelper.GR_R);
                                 int a_bIndex = cursor1. getColumnIndex(DBHelper.GR_A_B);
                                 int b_cIndex = cursor1. getColumnIndex(DBHelper.GR_B_C);
                                 int c_aIndex = cursor1. getColumnIndex(DBHelper.GR_C_A);
@@ -135,16 +125,14 @@ public class InsulationActivity3 extends AppCompatActivity {
                                 int b_peIndex = cursor1. getColumnIndex(DBHelper.GR_B_PE);
                                 int c_peIndex = cursor1. getColumnIndex(DBHelper.GR_C_PE);
                                 int n_peIndex = cursor1. getColumnIndex(DBHelper.GR_N_PE);
+                                int conclusionIndex = cursor1. getColumnIndex(DBHelper.GR_CONCLUSION);
                                 do {
                                     mark = cursor1.getString(markIndex);
                                     vein = cursor1.getString(veinIndex);
                                     section = cursor1.getString(sectionIndex);
                                     workU = cursor1.getString(workUIndex);
-                                    if (mark.equals("резерв"))
-                                        r = "-";
-                                    else
-                                        r = "0,5";
                                     u = cursor1.getString(uIndex);
+                                    r = cursor1.getString(rIndex);
                                     a_b = cursor1.getString(a_bIndex);
                                     b_c = cursor1.getString(b_cIndex);
                                     c_a = cursor1.getString(c_aIndex);
@@ -155,6 +143,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                                     b_pe = cursor1.getString(b_peIndex);
                                     c_pe = cursor1.getString(c_peIndex);
                                     n_pe = cursor1.getString(n_peIndex);
+                                    conclusion = cursor1.getString(conclusionIndex);
                                 } while (cursor1.moveToNext());
                             }
                             cursor1.close();
@@ -170,7 +159,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                                 "Напряж. мегаомметра: " + u + "\n" + "Сопротивление: " + r + "\n" + "A-B: " + a_b + "\n" +
                                 "B-C: " + b_c + "\n" + "C-A: " + c_a + "\n" + "A-N: " + a_n + "\n" + "B-N: " + b_n + "\n" +
                                 "C-N: " + c_n + "\n" + "A-PE: " + a_pe + "\n" + "B-PE: " + b_pe + "\n" +
-                                "C-PE: " + c_pe + "\n" + "N-PE: " + n_pe);
+                                "C-PE: " + c_pe + "\n" + "N-PE: " + n_pe + "\n" + "Вывод: " + conclusion);
                             builder4.setTitle(((TextView) view).getText());
                             AlertDialog dialog4 = builder4.create();
                             dialog4.show();
@@ -183,7 +172,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                             intent.putExtra("idRoom", idRoom);
                             intent.putExtra("nameLine", nameLine);
                             intent.putExtra("idLine", idLine);
-                            intent.putExtra("nameGroup", "Группа №" + ((TextView) view).getText().toString().substring(3));
+                            intent.putExtra("nameGroup", "Группа №" + ((TextView) view).getText().toString().substring(3, ((TextView) view).getText().toString().indexOf(" ", 3)));
                             intent.putExtra("idGroup", groupId);
                             intent.putExtra("change", true);
                             startActivity(intent);
@@ -245,28 +234,13 @@ public class InsulationActivity3 extends AppCompatActivity {
             }
         });
 
-        //ОТКРЫТИЕ PDF
-        pdf.setOnClickListener(new View.OnClickListener() {
+        //ПОВТОРИТЬ ГРУППУ
+        repeatGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start("HORIZONT");
-                templatePDF.closeDocument();
-                templatePDF.appViewPDF(InsulationActivity3.this);
+
             }
         });
-    }
-
-    public void start(String namefile) {
-        templatePDF = new TemplatePDF(getApplicationContext());
-        templatePDF.openDocument(namefile, true);
-        templatePDF.addMetaData("Protokol", "Item", "Company");
-        templatePDF.addTitles("РЕЗУЛЬТАТЫ", "проверки сопротивления изоляции проводов и кабелей");
-        templatePDF.addParagraph(date);
-        templatePDF.addZag(zag);
-        templatePDF.addCenterNotBD(uslovia);
-        templatePDF.addCenter(zag2);
-        templatePDF.addCenterNotBD(line);
-        templatePDF.createTableInsulation(header);
     }
 
     int getCountgroup(SQLiteDatabase database) {
@@ -284,11 +258,25 @@ public class InsulationActivity3 extends AppCompatActivity {
 
     public void addSpisokGroups(SQLiteDatabase database, ListView rooms, long idLine) {
         final ArrayList<String> spisokGroups = new ArrayList <String>();
-        Cursor cursor = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_NAME}, "grline_id = ?", new String[] {String.valueOf(idLine)}, null, null, null);
+        Cursor cursor = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_NAME, DBHelper.GR_MARK,
+                DBHelper.GR_VEIN, DBHelper.GR_SECTION, DBHelper.GR_PHASE}, "grline_id = ?", new String[] {String.valueOf(idLine)}, null, null, null);
         if (cursor.moveToFirst()) {
             int nameIndex = cursor.getColumnIndex(DBHelper.GR_NAME);
+            int markIndex = cursor.getColumnIndex(DBHelper.GR_MARK);
+            int veinIndex = cursor. getColumnIndex(DBHelper.GR_VEIN);
+            int sectionIndex = cursor. getColumnIndex(DBHelper.GR_SECTION);
+            int phaseIndex = cursor. getColumnIndex(DBHelper.GR_PHASE);
             do {
-                spisokGroups.add(cursor.getString(nameIndex));
+                String nameMark = cursor.getString(markIndex);
+                String numberVein = cursor.getString(veinIndex);
+                if (nameMark.equals("резерв"))
+                    spisokGroups.add(cursor.getString(nameIndex) + " (Резерв)");
+                else
+                    if (Integer.parseInt(numberVein) == 2 || Integer.parseInt(numberVein) == 3)
+                        spisokGroups.add(cursor.getString(nameIndex) + " (" + nameMark + "; " + numberVein + "x" + cursor.getString(sectionIndex) +
+                            "; Фаза " + cursor.getString(phaseIndex) + ")");
+                    else
+                        spisokGroups.add(cursor.getString(nameIndex) + " (" + nameMark + "; " + numberVein + "x" + cursor.getString(sectionIndex) + ")");
             } while (cursor.moveToNext());
         }
         cursor.close();
