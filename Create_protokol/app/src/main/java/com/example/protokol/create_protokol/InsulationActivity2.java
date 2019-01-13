@@ -185,9 +185,6 @@ public class InsulationActivity2 extends AppCompatActivity {
                                         } while (cursor.moveToNext());
                                         countlines = countlines - 1;
                                     }
-                                    else {
-                                        countlines = countlines - 1;
-                                    }
                                     cursor.close();
                                     //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ЩИТОВ
                                     addSpisokLines(database, lines, idRoom);
@@ -225,7 +222,7 @@ public class InsulationActivity2 extends AppCompatActivity {
         return numb_lines;
     }
 
-    public void addSpisokLines(SQLiteDatabase database, ListView rooms, long idRoom) {
+    public void addSpisokLines(SQLiteDatabase database, ListView lines, long idRoom) {
         final ArrayList<String> spisokLines = new ArrayList <String>();
         Cursor cursor = database.query(DBHelper.TABLE_LINES, new String[] {DBHelper.LN_NAME}, "lnr_id = ?", new String[] {String.valueOf(idRoom)}, null, null, null);
         if (cursor.moveToFirst()) {
@@ -236,6 +233,6 @@ public class InsulationActivity2 extends AppCompatActivity {
         }
         cursor.close();
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, spisokLines);
-        rooms.setAdapter(adapter);
+        lines.setAdapter(adapter);
     }
 }

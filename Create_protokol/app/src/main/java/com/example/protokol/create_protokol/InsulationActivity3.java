@@ -15,10 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class InsulationActivity3 extends AppCompatActivity {
 
@@ -211,6 +213,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                                                     "_id = ?",
                                                     new String[] {cursor.getString(groupidIndex)});
                                         } while (cursor.moveToNext());
+                                        countgroups = countgroups - 1;
                                     }
                                     //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ГРУПП
                                     addSpisokGroups(database, groups, idLine);
@@ -239,8 +242,249 @@ public class InsulationActivity3 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                //ЗАПРОС В БД ДЛЯ ПОСЛЕДНЕЙ ГРУППЫ
+                Cursor cursor = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_NAME, DBHelper.GR_MARK,
+                        DBHelper.GR_VEIN, DBHelper.GR_SECTION, DBHelper.GR_U1,
+                        DBHelper.GR_U2, DBHelper.GR_R}, "grline_id = ?", new String[] {String.valueOf(idLine)}, null, null, null);
+                cursor.moveToPosition(groups.getAdapter().getCount() - 1);
+                int nameGroupIndex = cursor.getColumnIndex(DBHelper.GR_NAME);
+                int markIndex = cursor.getColumnIndex(DBHelper.GR_MARK);
+                int veinIndex = cursor. getColumnIndex(DBHelper.GR_VEIN);
+                int sectionIndex = cursor. getColumnIndex(DBHelper.GR_SECTION);
+                int workUIndex = cursor. getColumnIndex(DBHelper.GR_U1);
+                int uIndex = cursor. getColumnIndex(DBHelper.GR_U2);
+                int rIndex = cursor. getColumnIndex(DBHelper.GR_R);
+                final String nameGroup = cursor.getString(nameGroupIndex);
+                String nameMark = cursor.getString(markIndex);
+                String numberVein = cursor.getString(veinIndex);
+                String numberSection = cursor.getString(sectionIndex);
+                String numberWorkU = cursor.getString(workUIndex);
+                String numberU = cursor.getString(uIndex);
+                String numberR = cursor.getString(rIndex);
+                cursor.close();
+
+                //ЕСЛИ ОНА РЕЗЕРВ
+                if (nameMark.equals("резерв")) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
+                    alert.setCancelable(false);
+                    alert.setMessage("Вы точно хотите добавить линию(резерв)?");
+                    alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(DBHelper.GR_LINE_ID, idLine);
+                            contentValues.put(DBHelper.GR_LNR_ID, idRoom);
+                            contentValues.put(DBHelper.GR_ID, countgroups + 1);
+                            contentValues.put(DBHelper.GR_NAME, "Гр " + String.valueOf(Integer.parseInt(nameGroup.substring(3)) + 1));
+                            contentValues.put(DBHelper.GR_U1, "-");
+                            contentValues.put(DBHelper.GR_MARK, "резерв");
+                            contentValues.put(DBHelper.GR_VEIN, "-");
+                            contentValues.put(DBHelper.GR_SECTION, "-");
+                            contentValues.put(DBHelper.GR_U2, "-");
+                            contentValues.put(DBHelper.GR_R, "-");
+                            contentValues.put(DBHelper.GR_PHASE, "-");
+                            contentValues.put(DBHelper.GR_A_B, "-");
+                            contentValues.put(DBHelper.GR_B_C, "-");
+                            contentValues.put(DBHelper.GR_C_A, "-");
+                            contentValues.put(DBHelper.GR_A_N, "-");
+                            contentValues.put(DBHelper.GR_B_N, "-");
+                            contentValues.put(DBHelper.GR_C_N, "-");
+                            contentValues.put(DBHelper.GR_A_PE, "-");
+                            contentValues.put(DBHelper.GR_B_PE, "-");
+                            contentValues.put(DBHelper.GR_C_PE, "-");
+                            contentValues.put(DBHelper.GR_N_PE, "-");
+                            contentValues.put(DBHelper.GR_CONCLUSION, "-");
+                            database.insert(DBHelper.TABLE_GROUPS, null, contentValues);
+                            countgroups = countgroups + 1;
+                            addSpisokGroups(database, groups, idLine);
+                        }
+                    });
+                    alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        }
+                    });
+                alert.show();
+                }
+                //ЕСЛИ НЕ РЕЗЕРВ
+                else {
+                    //ЕСЛИ 2 ИЛИ 3 ЖИЛЫ
+                    if (numberVein.equals("2") || numberVein.equals("3")) {
+                        changePhase(groups, database, idLine, idRoom, countgroups + 1, "Гр " + String.valueOf(Integer.parseInt(nameGroup.substring(3)) + 1),
+                                numberWorkU, nameMark, numberVein, numberSection, numberU, numberR);
+                    }
+                    //ЕСЛИ 4 ИЛИ 5 ЖИЛ
+                    else {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
+                        alert.setCancelable(false);
+                        alert.setMessage("Можно повторять группу, если у последней кол-во жил равно 2 или 3. При другом количестве жил выберете <Добавить группу>");
+                        alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                            }
+                        });
+                        alert.show();
+                    }
+                }
             }
         });
+    }
+
+    public String getRandomNumber(String x) {
+        if (x.contains(","))
+            return x;
+        int oldNumb = Integer.parseInt(x);
+        int random = 0;
+        Random generator = new Random();
+        if (oldNumb < 300)
+            random = oldNumb;
+        if (300 <= oldNumb && oldNumb < 500)
+            random = (generator.nextInt(9) - 4) * 50 + oldNumb;
+        if (500 <= oldNumb && oldNumb < 1000)
+            random = (generator.nextInt(5) - 2) * 100 + oldNumb;
+        if (1000 <= oldNumb && oldNumb < 3000 )
+            random = (generator.nextInt(9) - 4) * 100 + oldNumb;
+        if (3000 <= oldNumb)
+            random = (generator.nextInt(11) - 5) * 200 + oldNumb;
+        return String.valueOf(random);
+    }
+
+    //РЕКУРСИВНАЯ ИЗМЕНА ФАЗЫ
+    void changePhase(final ListView groups, final SQLiteDatabase database, final int idLine, final long idRoom, final int idGroup, final String nameGroup, final String numberWorkU, final String nameMark, final String numberVein, final String numberSection, final String numberU, final String numberR) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
+        View myView = getLayoutInflater().inflate(R.layout.dialog_for_repeat_group,null);
+        alert.setCancelable(false);
+        alert.setTitle("Выберете фазу и введите значение:");
+        final RadioButton phaseA = myView.findViewById(R.id.phaseA);
+        final RadioButton phaseB = myView.findViewById(R.id.phaseB);
+        RadioButton phaseC = myView.findViewById(R.id.phaseC);
+        final EditText input = myView.findViewById(R.id.editText2);
+        alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String numb = input.getText().toString();
+                if (numb.equals("")) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
+                    alert.setCancelable(false);
+                    alert.setMessage("Заполните поле значения!");
+                    alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            changePhase(groups, database, idLine, idRoom, idGroup, nameGroup,
+                                    numberWorkU, nameMark, numberVein, numberSection, numberU, numberR);
+                        }
+                    });
+                    alert.show();
+                }
+                else
+                    if (numb.contains(",") && Double.parseDouble(numb.replace(",",".")) > 1) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
+                        alert.setCancelable(false);
+                        alert.setMessage("Число не может быть дробным, если оно больше единицы!");
+                        alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                changePhase(groups, database, idLine, idRoom, idGroup, nameGroup,
+                                        numberWorkU, nameMark, numberVein, numberSection, numberU, numberR);
+                            }
+                        });
+                        alert.show();
+                    }
+                    else {
+                        String namePhase;
+                        if (phaseA.isChecked())
+                            namePhase = "A";
+                        else
+                            if (phaseB.isChecked())
+                                namePhase = "B";
+                            else
+                                namePhase = "C";
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(DBHelper.GR_LINE_ID, idLine);
+                        contentValues.put(DBHelper.GR_LNR_ID, idRoom);
+                        contentValues.put(DBHelper.GR_ID, idGroup);
+                        contentValues.put(DBHelper.GR_NAME, nameGroup);
+                        contentValues.put(DBHelper.GR_U1, numberWorkU);
+                        contentValues.put(DBHelper.GR_MARK, nameMark);
+                        contentValues.put(DBHelper.GR_VEIN, numberVein);
+                        contentValues.put(DBHelper.GR_SECTION, numberSection);
+                        contentValues.put(DBHelper.GR_U2, numberU);
+                        contentValues.put(DBHelper.GR_R, numberR);
+                        contentValues.put(DBHelper.GR_PHASE, namePhase);
+                        if (Double.parseDouble(numb.replace(",", ".")) >= Double.parseDouble(numberR.replace(",", ".")))
+                            contentValues.put(DBHelper.GR_CONCLUSION, "соответств.");
+                        else
+                            contentValues.put(DBHelper.GR_CONCLUSION, "не соотв.");
+                        //2 ЖИЛЫ
+                        if (numberVein.equals("2")) {
+                            contentValues.put(DBHelper.GR_A_B, "-");
+                            contentValues.put(DBHelper.GR_B_C, "-");
+                            contentValues.put(DBHelper.GR_C_A, "-");
+                            contentValues.put(DBHelper.GR_A_PE, "-");
+                            contentValues.put(DBHelper.GR_B_PE, "-");
+                            contentValues.put(DBHelper.GR_C_PE, "-");
+                            contentValues.put(DBHelper.GR_N_PE, "-");
+                            if (namePhase.equals("A")) {
+                                contentValues.put(DBHelper.GR_A_N, numb);
+                                contentValues.put(DBHelper.GR_B_N, "-");
+                                contentValues.put(DBHelper.GR_C_N, "-");
+                            }
+                            if (namePhase.equals("B")) {
+                                contentValues.put(DBHelper.GR_A_N, "-");
+                                contentValues.put(DBHelper.GR_B_N, numb);
+                                contentValues.put(DBHelper.GR_C_N, "-");
+                            }
+                            if (namePhase.equals("C")) {
+                                contentValues.put(DBHelper.GR_A_N, "-");
+                                contentValues.put(DBHelper.GR_B_N, "-");
+                                contentValues.put(DBHelper.GR_C_N, numb);
+                            }
+                        }
+                        //3 ЖИЛЫ
+                        if (numberVein.equals("3")) {
+                            contentValues.put(DBHelper.GR_A_B, "-");
+                            contentValues.put(DBHelper.GR_B_C, "-");
+                            contentValues.put(DBHelper.GR_C_A, "-");
+                            if (namePhase.equals("A")) {
+                                contentValues.put(DBHelper.GR_A_N, numb);
+                                contentValues.put(DBHelper.GR_B_N, "-");
+                                contentValues.put(DBHelper.GR_C_N, "-");
+                                contentValues.put(DBHelper.GR_A_PE, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_B_PE, "-");
+                                contentValues.put(DBHelper.GR_C_PE, "-");
+                                contentValues.put(DBHelper.GR_N_PE, getRandomNumber(numb));
+                            }
+                            if (namePhase.equals("B")) {
+                                contentValues.put(DBHelper.GR_A_N, "-");
+                                contentValues.put(DBHelper.GR_B_N, numb);
+                                contentValues.put(DBHelper.GR_C_N, "-");
+                                contentValues.put(DBHelper.GR_A_PE, "-");
+                                contentValues.put(DBHelper.GR_B_PE, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_C_PE, "-");
+                                contentValues.put(DBHelper.GR_N_PE, getRandomNumber(numb));
+                            }
+                            if (namePhase.equals("C")) {
+                                contentValues.put(DBHelper.GR_A_N, "-");
+                                contentValues.put(DBHelper.GR_B_N, "-");
+                                contentValues.put(DBHelper.GR_C_N, numb);
+                                contentValues.put(DBHelper.GR_A_PE, "-");
+                                contentValues.put(DBHelper.GR_B_PE, "-");
+                                contentValues.put(DBHelper.GR_C_PE, getRandomNumber(numb));
+                                contentValues.put(DBHelper.GR_N_PE, getRandomNumber(numb));
+                            }
+                        }
+                        database.insert(DBHelper.TABLE_GROUPS, null, contentValues);
+                        countgroups = countgroups + 1;
+                        addSpisokGroups(database, groups, idLine);
+                        Toast toast2 = Toast.makeText(getApplicationContext(),
+                                "Группа добавлена", Toast.LENGTH_SHORT);
+                        toast2.show();
+                    }
+            }
+        });
+        alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+        alert.setView(myView);
+        alert.show();
     }
 
     int getCountgroup(SQLiteDatabase database) {
@@ -256,7 +500,7 @@ public class InsulationActivity3 extends AppCompatActivity {
         return numb_groups;
     }
 
-    public void addSpisokGroups(SQLiteDatabase database, ListView rooms, long idLine) {
+    public void addSpisokGroups(SQLiteDatabase database, ListView groups, long idLine) {
         final ArrayList<String> spisokGroups = new ArrayList <String>();
         Cursor cursor = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_NAME, DBHelper.GR_MARK,
                 DBHelper.GR_VEIN, DBHelper.GR_SECTION, DBHelper.GR_PHASE}, "grline_id = ?", new String[] {String.valueOf(idLine)}, null, null, null);
@@ -281,6 +525,6 @@ public class InsulationActivity3 extends AppCompatActivity {
         }
         cursor.close();
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, spisokGroups);
-        rooms.setAdapter(adapter);
+        groups.setAdapter(adapter);
     }
 }

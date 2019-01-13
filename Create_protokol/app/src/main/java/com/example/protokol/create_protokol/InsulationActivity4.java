@@ -261,7 +261,7 @@ public class InsulationActivity4 extends AppCompatActivity {
                             View myView = getLayoutInflater().inflate(R.layout.dialog_for_section,null);
                             alert1.setCancelable(false);
                             alert1.setTitle("Введите сечение:");
-                            final EditText input = (EditText) myView.findViewById(R.id.editText2);
+                            final EditText input = myView.findViewById(R.id.editText2);
                             alert1.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     String numberSection = input.getText().toString();
