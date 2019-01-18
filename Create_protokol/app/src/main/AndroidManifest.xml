@@ -26,6 +26,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".RoomElementActivity2">
+            <intent-filter>
+                <action android:name="android.intent.action.RoomElement2" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".InsulationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.Insulation" />
@@ -47,13 +54,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".InsulationActivity4" android:windowSoftInputMode="adjustPan">
+        <activity
+            android:name=".InsulationActivity4"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.Insulation4" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

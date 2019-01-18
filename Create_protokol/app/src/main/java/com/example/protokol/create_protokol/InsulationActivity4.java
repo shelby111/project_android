@@ -480,7 +480,6 @@ public class InsulationActivity4 extends AppCompatActivity {
                         if (reserve.isChecked()) {
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(DBHelper.GR_LINE_ID, idLine);
-                            contentValues.put(DBHelper.GR_LNR_ID, idRoom);
                             contentValues.put(DBHelper.GR_ID, idGroup);
                             contentValues.put(DBHelper.GR_NAME, "Гр " + Integer.parseInt(textName.substring(8)));
                             contentValues.put(DBHelper.GR_U1, "-");
@@ -509,7 +508,6 @@ public class InsulationActivity4 extends AppCompatActivity {
                             //ЗАПОЛНЕНИЕ НОВОЙ СТРОКИ
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(DBHelper.GR_LINE_ID, idLine);
-                            contentValues.put(DBHelper.GR_LNR_ID, idRoom);
                             contentValues.put(DBHelper.GR_ID, idGroup);
                             contentValues.put(DBHelper.GR_NAME, "Гр " + Integer.parseInt(textName.substring(8)));
                             contentValues.put(DBHelper.GR_U1, textWorkU.substring(20));
@@ -520,7 +518,7 @@ public class InsulationActivity4 extends AppCompatActivity {
                             contentValues.put(DBHelper.GR_R, numberR);
                             contentValues.put(DBHelper.GR_PHASE, namePhase);
                             if (Double.parseDouble(numb.replace(",", ".")) >= Double.parseDouble(numberR.replace(",", ".")))
-                                contentValues.put(DBHelper.GR_CONCLUSION, "соответств.");
+                                contentValues.put(DBHelper.GR_CONCLUSION, "соответст.");
                             else
                                 contentValues.put(DBHelper.GR_CONCLUSION, "не соотв.");
                             //2 ЖИЛЫ

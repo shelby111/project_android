@@ -272,7 +272,6 @@ public class InsulationActivity3 extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(DBHelper.GR_LINE_ID, idLine);
-                            contentValues.put(DBHelper.GR_LNR_ID, idRoom);
                             contentValues.put(DBHelper.GR_ID, countgroups + 1);
                             contentValues.put(DBHelper.GR_NAME, "Гр " + String.valueOf(Integer.parseInt(nameGroup.substring(3)) + 1));
                             contentValues.put(DBHelper.GR_U1, "-");
@@ -397,7 +396,6 @@ public class InsulationActivity3 extends AppCompatActivity {
                                 namePhase = "C";
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(DBHelper.GR_LINE_ID, idLine);
-                        contentValues.put(DBHelper.GR_LNR_ID, idRoom);
                         contentValues.put(DBHelper.GR_ID, idGroup);
                         contentValues.put(DBHelper.GR_NAME, nameGroup);
                         contentValues.put(DBHelper.GR_U1, numberWorkU);
@@ -408,7 +406,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                         contentValues.put(DBHelper.GR_R, numberR);
                         contentValues.put(DBHelper.GR_PHASE, namePhase);
                         if (Double.parseDouble(numb.replace(",", ".")) >= Double.parseDouble(numberR.replace(",", ".")))
-                            contentValues.put(DBHelper.GR_CONCLUSION, "соответств.");
+                            contentValues.put(DBHelper.GR_CONCLUSION, "соответст.");
                         else
                             contentValues.put(DBHelper.GR_CONCLUSION, "не соотв.");
                         //2 ЖИЛЫ

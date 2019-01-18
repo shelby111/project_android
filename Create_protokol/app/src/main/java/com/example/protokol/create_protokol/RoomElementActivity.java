@@ -36,10 +36,6 @@ public class RoomElementActivity extends AppCompatActivity {
     private String line = "______________________________________________________________________________________";
     //ЗАКЛЮЧЕНИЕ
     private String zakl = "Заключение:";
-    private String end = "a) Проверена целостность и прочность проводников заземления и зануления, переходные контакты их    соединений, болтовые соединения проверены на затяжку, сварные – ударом молотка." + "\n" +
-            "b) Сопротивление переходных контактов выше нормы, указаны в п/п ______________." + "\n" +
-            "c) Не заземлено оборудование, указанное в п/п : " +
-            "d) Величина измеренного переходного сопротивления прочих контактов заземляющих и нулевых проводников,  элементов электрооборудования соответствует (не соответствует) нормам __________________________.";
     private String proverka = "Проверку провели:   _____________________     ___________    _____________" + "\n" +
                               "                                           (Должность)                    (Подпись)          (Ф.И.О.)" + "\n" + "\n" +
                               "Проверил:                 _____________________     ___________    _____________" + "\n" +
@@ -527,13 +523,13 @@ public class RoomElementActivity extends AppCompatActivity {
         templatePDF = new TemplatePDF(getApplicationContext());
         templatePDF.openDocument(namefile, false);
         templatePDF.addMetaData("Protokol", "Item", "Company");
-        templatePDF.addTitles("РЕЗУЛЬТАТЫ", "проверки наличия цепи между заземленными установками и элементами заземленной установки");
-        templatePDF.addParagraph(date);
-        templatePDF.addZag(zag);
-        templatePDF.addParagraph(uslovia);
-        templatePDF.addZag(zag2);
-        templatePDF.addParagraph(line);
-        templatePDF.createTable(header, getNumbers());
+        templatePDF.addTitles_BD("РЕЗУЛЬТАТЫ", "проверки наличия цепи между заземленными установками и элементами заземленной установки", 12);
+        templatePDF.addParagraph_NotBD(date, 10);
+        templatePDF.addCenter_BD_NotBefore(zag, 12);
+        templatePDF.addCenter_NotBD(uslovia, 10);
+        templatePDF.addCenter_BD_withBefore(zag2, 12);
+        templatePDF.addCenter_NotBD(line, 10);
+        templatePDF.createTableRE(header, getNumbers());
     }
 
     //ГЕНЕРАТОР
@@ -565,8 +561,8 @@ public class RoomElementActivity extends AppCompatActivity {
             namefile = "TepmlatePDF";
         final ArrayList<String> NZ = new ArrayList<>();
         start(namefile);
-        int numb_rooms = getCountroom(database);
-        int room_chek = 0, rid, count = 1, indEL = 0;
+        //room_chek - номер текущей комнаты, rid - айди комнаты в таблице элементов, count - текущий элемент
+        int room_chek = 0, rid, count = 1;
         String res;
         Cursor cursor = database.rawQuery("select * from rooms as r join elements as e on e.room_id = r._id order by e.room_id", new String[] { });
         if (cursor.moveToFirst()) {
@@ -577,13 +573,14 @@ public class RoomElementActivity extends AppCompatActivity {
             int elsoprIndex = cursor.getColumnIndex(DBHelper.EL_SOPR);
             do {
                 rid = cursor.getInt(elidroomIndex);
-                if ((rid != room_chek) && (rid <= numb_rooms)){
-                    templatePDF.addElement(elements);
+                //ЕСЛИ ВСТРЕТИЛАСЬ НОВАЯ КОМНАТА
+                if ((rid != room_chek)){
+                    templatePDF.addElementRE(elements);
                     elements = new ArrayList<>();
                     count = 0;
                     room_chek++;
-                    templatePDF.addRoom(cursor.getString(roomnameIndex), String.valueOf(room_chek) + ". ");
-                    templatePDF.addElement(elements);
+                    templatePDF.addRoomRE(cursor.getString(roomnameIndex), String.valueOf(room_chek) + ". ");
+                    templatePDF.addElementRE(elements);
                 }
                 count++;
                 if (cursor.getString(elsoprIndex).equals("Н.З.")){
@@ -592,7 +589,7 @@ public class RoomElementActivity extends AppCompatActivity {
                 }
                 else
                     res = "cоответсвует";
-                element.add(String.valueOf(count));
+                element.add(String.valueOf(count) + ".");
                 element.add(cursor.getString(elnameIndex));
                 element.add(cursor.getString(elnumberIndex));
                 element.add("0,05");
@@ -601,7 +598,7 @@ public class RoomElementActivity extends AppCompatActivity {
                 elements.add(element);
                 element = new ArrayList<>();
             } while (cursor.moveToNext());
-            templatePDF.addElement(elements);
+            templatePDF.addElementRE(elements);
         }
         cursor.close();
         String joinedNZ = TextUtils.join("; ", NZ);
@@ -609,9 +606,9 @@ public class RoomElementActivity extends AppCompatActivity {
                 "b) Сопротивление переходных контактов выше нормы, указаны в п/п ______________." + "\n" +
                 "c) Не заземлено оборудование, указанное в п/п : " + joinedNZ + "\n" +
                 "d) Величина измеренного переходного сопротивления прочих контактов заземляющих и нулевых проводников,  элементов электрооборудования соответствует (не соответствует) нормам __________________________.";
-        templatePDF.addCenter(zakl);
-        templatePDF.addParagraph(end);
-        templatePDF.addParagraph(proverka);
+        templatePDF.addCenter_BD_withBefore(zakl, 12);
+        templatePDF.addParagraph_NotBD(end, 10);
+        templatePDF.addParagraph_NotBD(proverka, 10);
         templatePDF.closeDocument();
         templatePDF.appViewPDF(RoomElementActivity.this);
     }
