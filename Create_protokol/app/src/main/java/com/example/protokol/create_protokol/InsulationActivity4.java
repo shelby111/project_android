@@ -4,19 +4,14 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,8 +54,18 @@ public class InsulationActivity4 extends AppCompatActivity {
         final String nameLine = getIntent().getStringExtra("nameLine");
         final int idLine = getIntent().getIntExtra("idLine", 0);
         String nameGroup = getIntent().getStringExtra("nameGroup");
-        final int idGroup = getIntent().getIntExtra("idGroup", 0);
-        final boolean change = getIntent().getBooleanExtra("change", false);
+        final int idGroup = getIntent().getIntExtra("idGroup", -1);
+
+        final Toast toast = Toast.makeText(getApplicationContext(),
+                "АЙДИ ГРУППЫ - " + idGroup, Toast.LENGTH_SHORT);
+        toast.show();
+
+        //ОПРЕДЕЛЯЕМ, СОЗДАЕМ ЛИ МЫ НОВУЮ ГРУППУ ИЛИ ИЗМЕНЯЕМ СТАРУЮ
+        final boolean change;
+        if (idGroup != -1)
+            change = true;
+        else
+            change = false;
 
         //ДЕЛАЕМ ПЕРЕКЛЮЧАТЕЛЬ ВЫКЛЮЧЕННЫМ ПО УМОЛЧАНИЮ
         reserve.setChecked(false);
@@ -479,8 +484,9 @@ public class InsulationActivity4 extends AppCompatActivity {
                         //СОЗДАЕМ НОВУЮ ГРУППУ
                         if (reserve.isChecked()) {
                             ContentValues contentValues = new ContentValues();
+                            if (change)
+                                contentValues.put(DBHelper.GR_ID, idGroup);
                             contentValues.put(DBHelper.GR_LINE_ID, idLine);
-                            contentValues.put(DBHelper.GR_ID, idGroup);
                             contentValues.put(DBHelper.GR_NAME, "Гр " + Integer.parseInt(textName.substring(8)));
                             contentValues.put(DBHelper.GR_U1, "-");
                             contentValues.put(DBHelper.GR_MARK, "резерв");
@@ -507,8 +513,9 @@ public class InsulationActivity4 extends AppCompatActivity {
                             String numberR = textR.substring(15);
                             //ЗАПОЛНЕНИЕ НОВОЙ СТРОКИ
                             ContentValues contentValues = new ContentValues();
+                            if (change)
+                                contentValues.put(DBHelper.GR_ID, idGroup);
                             contentValues.put(DBHelper.GR_LINE_ID, idLine);
-                            contentValues.put(DBHelper.GR_ID, idGroup);
                             contentValues.put(DBHelper.GR_NAME, "Гр " + Integer.parseInt(textName.substring(8)));
                             contentValues.put(DBHelper.GR_U1, textWorkU.substring(20));
                             contentValues.put(DBHelper.GR_MARK, textMark.substring(7));

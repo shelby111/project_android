@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 public class InsulationActivity extends AppCompatActivity {
 
     DBHelper dbHelper;
-    private int countroom = 0;
 
     private String date = "Дата проведения проверки «__» ___________ _______г. ";
     private String zag = "Климатические условия при проведении измерений";
@@ -53,9 +51,6 @@ public class InsulationActivity extends AppCompatActivity {
         Button addRoom = findViewById(R.id.button9);
         Button pdf = findViewById(R.id.button8);
 
-        //ПОЛУЧЕНИЕ ЗНАЧЕНИЯ СOUNTROOM
-        countroom = getCountroom(database);
-
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
         addSpisokRooms(database, rooms);
 
@@ -72,7 +67,6 @@ public class InsulationActivity extends AppCompatActivity {
         addRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                countroom++;
                 AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity.this);
                 alert.setCancelable(false);
                 alert.setTitle("Введите название комнаты:");
@@ -82,7 +76,6 @@ public class InsulationActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         final String nameRoom = input.getText().toString();
                         ContentValues contentValues = new ContentValues();
-                        contentValues.put(DBHelper.LNR_ID, countroom);
                         contentValues.put(DBHelper.LNR_NAME, nameRoom);
                         database.insert(DBHelper.TABLE_LINE_ROOMS, null, contentValues);
                         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
@@ -94,7 +87,7 @@ public class InsulationActivity extends AppCompatActivity {
                 });
                 alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        countroom = countroom - 1;
+
                     }
                 });
                 alert.show();
@@ -104,7 +97,7 @@ public class InsulationActivity extends AppCompatActivity {
         //ПЕРЕХОД К ЩИТАМ И РЕДАКТОР КОМНАТЫ
         rooms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, final View view, int position, final long id) {
+            public void onItemClick(AdapterView<?> parent, final View view, final int position, final long id) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity.this);
                 alert.setTitle(((TextView) view).getText());
                 String arrayMenu[] = {"Перейти к щитам", "Изменить название", "Удалить комнату"};
@@ -112,11 +105,18 @@ public class InsulationActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        //ЗАПРОС В БД ДЛЯ ПОЛУЧЕНИЯ ID НУЖНОЙ КОМНАТЫ
+                        Cursor cursor4 = database.query(DBHelper.TABLE_LINE_ROOMS, new String[] {DBHelper.LNR_ID}, null, null, null, null, null);
+                        cursor4.moveToPosition(position);
+                        int idRoomIndex = cursor4.getColumnIndex(DBHelper.LNR_ID);
+                        final int idRoom = cursor4.getInt(idRoomIndex);
+                        cursor4.close();
+
                         //ПЕРЕЙТИ К ЩИТАМ
                         if (which == 0) {
                             Intent intent = new Intent("android.intent.action.Insulation2");
                             intent.putExtra("nameRoom", ((TextView) view).getText().toString());
-                            intent.putExtra("idRoom", id + 1);
+                            intent.putExtra("idRoom", idRoom);
                             startActivity(intent);
                         }
 
@@ -135,7 +135,7 @@ public class InsulationActivity extends AppCompatActivity {
                                     database.update(DBHelper.TABLE_LINE_ROOMS,
                                             uppname,
                                             "_id = ?",
-                                            new String[] {String.valueOf(id + 1)});
+                                            new String[] {String.valueOf(idRoom)});
                                     //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
                                     addSpisokRooms(database, rooms);
                                     Toast toast1 = Toast.makeText(getApplicationContext(),
@@ -159,44 +159,14 @@ public class InsulationActivity extends AppCompatActivity {
                             builder4.setCancelable(false);
                             builder4.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    database.delete(DBHelper.TABLE_GROUPS, "grlnr_id = ?", new String[] {String.valueOf(id + 1)});
-                                    database.delete(DBHelper.TABLE_LINES, "lnr_id = ?", new String[] {String.valueOf(id + 1)});
-                                    database.delete(DBHelper.TABLE_LINE_ROOMS, "_id = ?", new String[] {String.valueOf(id + 1)});
-
-                                    //ЗАПРОС В БД И ИЗМЕНЕНИЕ КАЖДОГО ID КОМНАТЫ КАК В ТАБЛИЦЕ ГРУПП, ЛИНИЙ, ТАК И В ТАБЛИЦЕ КОМНАТ НА -1(ПОСЛЕ УДАЛЕННОГО ЭЛЕМЕНТА)
-                                    Cursor cursor = database.query(DBHelper.TABLE_LINE_ROOMS, new String[] {DBHelper.LNR_ID, DBHelper.LNR_NAME}, "_id > ?", new String[] {String.valueOf(id + 1)}, null, null, null);
-                                    if (cursor.moveToFirst()) {
-                                        int roomchangeIndex = cursor.getColumnIndex(DBHelper.LNR_ID);
-                                        do {
-                                            //В ТАБЛИЦЕ КОМНАТ
-                                            ContentValues uppid = new ContentValues();
-                                            uppid.put(DBHelper.LNR_ID, String.valueOf(cursor.getInt(roomchangeIndex)-1));
-                                            database.update(DBHelper.TABLE_LINE_ROOMS,
-                                                    uppid,
-                                                    "_id = ?",
-                                                    new String[] {cursor.getString(roomchangeIndex)});
-
-                                            //В ТАБЛИЦЕ ЛИНИЙ
-                                            ContentValues uppidInLine = new ContentValues();
-                                            uppidInLine.put(DBHelper.LN_ID_ROOM, String.valueOf(cursor.getInt(roomchangeIndex)-1));
-                                            database.update(DBHelper.TABLE_LINES,
-                                                    uppidInLine,
-                                                    "lnr_id = ?",
-                                                    new String[] {cursor.getString(roomchangeIndex)});
-
-                                        } while (cursor.moveToNext());
-                                        countroom = countroom - 1;
-                                    }
-                                    else {
-                                        countroom = countroom - 1;
-                                    }
-                                    cursor.close();
+                                    database.delete(DBHelper.TABLE_GROUPS, "grlnr_id = ?", new String[] {String.valueOf(idRoom)});
+                                    database.delete(DBHelper.TABLE_LINES, "lnr_id = ?", new String[] {String.valueOf(idRoom)});
+                                    database.delete(DBHelper.TABLE_LINE_ROOMS, "_id = ?", new String[] {String.valueOf(idRoom)});
                                     //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
                                     addSpisokRooms(database, rooms);
                                     Toast toast2 = Toast.makeText(getApplicationContext(),
                                             "Комната <" + ((TextView) view).getText() + "> удалена", Toast.LENGTH_SHORT);
                                     toast2.show();
-
                                 }
                             });
                             builder4.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
@@ -278,7 +248,7 @@ public class InsulationActivity extends AppCompatActivity {
         if (namefile == null)
             namefile = "TepmlatePDF";
         start(namefile);
-        int roomPrev = 0, linePrev =0, countLines = 0;
+        int roomPrev = 0, linePrev = 0, currentLine = 0, currentRoom = 0;
         Cursor cursor = database.rawQuery("select r._id as r_id, l._id as l_id, room, line, lnr_id, grline_id, name_group, u1, " +
                 "mark, vein, section, u2, r, a_b, b_c, c_a, a_n, b_n, c_n, a_pe, b_pe, c_pe, n_pe, " +
                 "conclusion from lnrooms as r join `lines` as l on l.lnr_id = r._id join groups as g on g.grline_id = l._id order by r._id, l._id", new String[] { });
@@ -312,17 +282,18 @@ public class InsulationActivity extends AppCompatActivity {
                 if ((r_id != roomPrev)){
                     templatePDF.addGroupsInsulation(groups);
                     groups = new ArrayList<>();
-                    countLines = 0;
+                    currentLine = 0;
+                    currentRoom++;
                     roomPrev = r_id;
-                    templatePDF.addRoomInsulation(String.valueOf(r_id) + ". " + cursor.getString(nameRoomIndex));
+                    templatePDF.addRoomInsulation(String.valueOf(currentRoom) + ". " + cursor.getString(nameRoomIndex));
                 }
                 //ЕСЛИ ВСТРЕТИЛСЯ НОВЫЙ ЩИТ
                 if ((l_id != linePrev)){
                     templatePDF.addGroupsInsulation(groups);
                     groups = new ArrayList<>();
                     linePrev = l_id;
-                    countLines++;
-                    templatePDF.addLineInsulation(String.valueOf(countLines) + ". ", cursor.getString(nameLineIndex));
+                    currentLine++;
+                    templatePDF.addLineInsulation(String.valueOf(currentLine) + ". ", cursor.getString(nameLineIndex));
                 }
                 String vein = cursor.getString(veinIndex);
                 group.add(cursor.getString(nameGroupIndex));
@@ -359,19 +330,6 @@ public class InsulationActivity extends AppCompatActivity {
         templatePDF.addParagraph_NotBD(proverka, 10);
         templatePDF.closeDocument();
         templatePDF.appViewPDF(InsulationActivity.this);
-    }
-
-    int getCountroom(SQLiteDatabase database) {
-        int numb_rooms = 0;
-        Cursor cur = database.rawQuery("select count(*) as numb_rooms from lnrooms", new String[] { });
-        if (cur.moveToFirst()) {
-            int numbers_roomidIndex = cur.getColumnIndex("numb_rooms");
-            do {
-                numb_rooms = cur.getInt(numbers_roomidIndex);
-            } while (cur.moveToNext());
-        }
-        cur.close();
-        return numb_rooms;
     }
 
     public void addSpisokRooms(SQLiteDatabase database, ListView rooms) {

@@ -25,7 +25,6 @@ import java.util.Random;
 public class InsulationActivity3 extends AppCompatActivity {
 
     DBHelper dbHelper;
-    private int countgroups = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +41,13 @@ public class InsulationActivity3 extends AppCompatActivity {
         Button addGroup = findViewById(R.id.button9);
         Button repeatGroup = findViewById(R.id.button8);
         final String nameRoom = getIntent().getStringExtra("nameRoom");
-        final long idRoom = getIntent().getLongExtra("idRoom", 0);
+        final int idRoom = getIntent().getIntExtra("idRoom", 0);
         final String nameLine = getIntent().getStringExtra("nameLine");
         final int idLine = getIntent().getIntExtra("idLine", 0);
 
         //ВЫВОД КОМНАТЫ И ЩИТА
         room.setText(nameRoom);
         line.setText(nameLine);
-
-        //ПОЛУЧЕНИЕ ЗНАЧЕНИЯ СOUNTGROUPS
-        countgroups = getCountgroup(database);
 
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ГРУПП
         addSpisokGroups(database, groups, idLine);
@@ -77,13 +73,11 @@ public class InsulationActivity3 extends AppCompatActivity {
                 intent.putExtra("nameLine", nameLine);
                 intent.putExtra("idLine", idLine);
                 intent.putExtra("nameGroup", "Группа №" + String.valueOf(groups.getAdapter().getCount() + 1));
-                intent.putExtra("idGroup", countgroups+1);
-                intent.putExtra("change", false);
                 startActivity(intent);
             }
         });
 
-        //ИЗМЕНИТЬ И УДАЛИТЬ ГРУППУ
+        //ПОСМОТРЕТЬ, ИЗМЕНИТЬ И УДАЛИТЬ ГРУППУ
         groups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, final long id) {
@@ -94,7 +88,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        //ЗАПРОС В БД ДЛЯ ПОЛУЧЕНИЯ ID НУЖНОЙ ЛИНИИ
+                        //ЗАПРОС В БД ДЛЯ ПОЛУЧЕНИЯ ID НУЖНОЙ ГРУППЫ
                         Cursor cursor4 = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_ID}, "grline_id = ?", new String[] {String.valueOf(idLine)}, null, null, null);
                         cursor4.moveToPosition(position);
                         int groupIndex = cursor4.getColumnIndex(DBHelper.LN_ID);
@@ -176,7 +170,6 @@ public class InsulationActivity3 extends AppCompatActivity {
                             intent.putExtra("idLine", idLine);
                             intent.putExtra("nameGroup", "Группа №" + ((TextView) view).getText().toString().substring(3, ((TextView) view).getText().toString().indexOf(" ", 3)));
                             intent.putExtra("idGroup", groupId);
-                            intent.putExtra("change", true);
                             startActivity(intent);
                         }
 
@@ -189,7 +182,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                             builder4.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     database.delete(DBHelper.TABLE_GROUPS, "_id = ?", new String[] {String.valueOf(groupId)});
-                                    //ВЫЧИТАЕМ ИЗ ID И НАЗВАНИЙ ГРУПП ЕДИНИЦУ
+                                    //ВЫЧИТАЕМ ИЗ НАЗВАНИЙ ГРУПП ЕДИНИЦУ
                                     Cursor cursor = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_ID, DBHelper.GR_NAME, DBHelper.GR_LINE_ID}, "_id > ?", new String[] {String.valueOf(groupId)}, null, null, null);
                                     if (cursor.moveToFirst()) {
                                         int namechangeIndex = cursor.getColumnIndex(DBHelper.GR_NAME);
@@ -205,16 +198,9 @@ public class InsulationActivity3 extends AppCompatActivity {
                                                         "_id = ?",
                                                         new String[]{cursor.getString(groupidIndex)});
                                             }
-                                            //ID
-                                            ContentValues uppidGroup = new ContentValues();
-                                            uppidGroup.put(DBHelper.GR_ID, String.valueOf(cursor.getInt(groupidIndex)-1));
-                                            database.update(DBHelper.TABLE_GROUPS,
-                                                    uppidGroup,
-                                                    "_id = ?",
-                                                    new String[] {cursor.getString(groupidIndex)});
                                         } while (cursor.moveToNext());
-                                        countgroups = countgroups - 1;
                                     }
+                                    cursor.close();
                                     //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ГРУПП
                                     addSpisokGroups(database, groups, idLine);
                                     Toast toast2 = Toast.makeText(getApplicationContext(),
@@ -272,7 +258,6 @@ public class InsulationActivity3 extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(DBHelper.GR_LINE_ID, idLine);
-                            contentValues.put(DBHelper.GR_ID, countgroups + 1);
                             contentValues.put(DBHelper.GR_NAME, "Гр " + String.valueOf(Integer.parseInt(nameGroup.substring(3)) + 1));
                             contentValues.put(DBHelper.GR_U1, "-");
                             contentValues.put(DBHelper.GR_MARK, "резерв");
@@ -293,7 +278,6 @@ public class InsulationActivity3 extends AppCompatActivity {
                             contentValues.put(DBHelper.GR_N_PE, "-");
                             contentValues.put(DBHelper.GR_CONCLUSION, "-");
                             database.insert(DBHelper.TABLE_GROUPS, null, contentValues);
-                            countgroups = countgroups + 1;
                             addSpisokGroups(database, groups, idLine);
                         }
                     });
@@ -308,7 +292,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                 else {
                     //ЕСЛИ 2 ИЛИ 3 ЖИЛЫ
                     if (numberVein.equals("2") || numberVein.equals("3")) {
-                        changePhase(groups, database, idLine, idRoom, countgroups + 1, "Гр " + String.valueOf(Integer.parseInt(nameGroup.substring(3)) + 1),
+                        changePhase(groups, database, idLine, "Гр " + String.valueOf(Integer.parseInt(nameGroup.substring(3)) + 1),
                                 numberWorkU, nameMark, numberVein, numberSection, numberU, numberR);
                     }
                     //ЕСЛИ 4 ИЛИ 5 ЖИЛ
@@ -348,7 +332,7 @@ public class InsulationActivity3 extends AppCompatActivity {
     }
 
     //РЕКУРСИВНАЯ ИЗМЕНА ФАЗЫ
-    void changePhase(final ListView groups, final SQLiteDatabase database, final int idLine, final long idRoom, final int idGroup, final String nameGroup, final String numberWorkU, final String nameMark, final String numberVein, final String numberSection, final String numberU, final String numberR) {
+    void changePhase(final ListView groups, final SQLiteDatabase database, final int idLine, final String nameGroup, final String numberWorkU, final String nameMark, final String numberVein, final String numberSection, final String numberU, final String numberR) {
         AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
         View myView = getLayoutInflater().inflate(R.layout.dialog_for_repeat_group,null);
         alert.setCancelable(false);
@@ -366,7 +350,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                     alert.setMessage("Заполните поле значения!");
                     alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            changePhase(groups, database, idLine, idRoom, idGroup, nameGroup,
+                            changePhase(groups, database, idLine, nameGroup,
                                     numberWorkU, nameMark, numberVein, numberSection, numberU, numberR);
                         }
                     });
@@ -379,7 +363,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                         alert.setMessage("Число не может быть дробным, если оно больше единицы!");
                         alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                changePhase(groups, database, idLine, idRoom, idGroup, nameGroup,
+                                changePhase(groups, database, idLine, nameGroup,
                                         numberWorkU, nameMark, numberVein, numberSection, numberU, numberR);
                             }
                         });
@@ -396,7 +380,6 @@ public class InsulationActivity3 extends AppCompatActivity {
                                 namePhase = "C";
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(DBHelper.GR_LINE_ID, idLine);
-                        contentValues.put(DBHelper.GR_ID, idGroup);
                         contentValues.put(DBHelper.GR_NAME, nameGroup);
                         contentValues.put(DBHelper.GR_U1, numberWorkU);
                         contentValues.put(DBHelper.GR_MARK, nameMark);
@@ -468,7 +451,6 @@ public class InsulationActivity3 extends AppCompatActivity {
                             }
                         }
                         database.insert(DBHelper.TABLE_GROUPS, null, contentValues);
-                        countgroups = countgroups + 1;
                         addSpisokGroups(database, groups, idLine);
                         Toast toast2 = Toast.makeText(getApplicationContext(),
                                 "Группа добавлена", Toast.LENGTH_SHORT);
@@ -485,20 +467,7 @@ public class InsulationActivity3 extends AppCompatActivity {
         alert.show();
     }
 
-    int getCountgroup(SQLiteDatabase database) {
-        int numb_groups = 0;
-        Cursor cur = database.rawQuery("select count(*) as numb_groups from groups", new String[] { });
-        if (cur.moveToFirst()) {
-            int numbers_groupidIndex = cur.getColumnIndex("numb_groups");
-            do {
-                numb_groups = cur.getInt(numbers_groupidIndex);
-            } while (cur.moveToNext());
-        }
-        cur.close();
-        return numb_groups;
-    }
-
-    public void addSpisokGroups(SQLiteDatabase database, ListView groups, long idLine) {
+    public void addSpisokGroups(SQLiteDatabase database, ListView groups, int idLine) {
         final ArrayList<String> spisokGroups = new ArrayList <String>();
         Cursor cursor = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_NAME, DBHelper.GR_MARK,
                 DBHelper.GR_VEIN, DBHelper.GR_SECTION, DBHelper.GR_PHASE}, "grline_id = ?", new String[] {String.valueOf(idLine)}, null, null, null);

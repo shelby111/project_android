@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 14;
+    public static final int DATABASE_VERSION = 19;
     public static final String DATABLE_NAME = "contactDB";
 
     //ITEM1
@@ -23,6 +23,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String EL_NUMBER = "number";
     public static final String ROOM_ID = "room_id";
     public static final String EL_SOPR = "sopr";
+    public static final String EL_CONCLUSION = "conclusion";
 
     //ITEM2
 
@@ -67,16 +68,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_ROOMS + "(" + KEY_ID + " integer primary key," + KEY_NAME +
+        db.execSQL("create table " + TABLE_ROOMS + "(" + KEY_ID + " integer primary key AUTOINCREMENT," + KEY_NAME +
             " text" + ");");
 
         db.execSQL("create table " + TABLE_ELEMENTS + "(" + EL_ID + " integer primary key AUTOINCREMENT," + EL_NAME +
-                " text," + EL_NUMBER + " text,"  + ROOM_ID + " integer," + EL_SOPR + " text" + ");");
+                " text," + EL_NUMBER + " text,"  + ROOM_ID + " integer," + EL_SOPR + " text," + EL_CONCLUSION + " text" + ");");
 
-        db.execSQL("create table " + TABLE_LINE_ROOMS + "(" + LNR_ID + " integer primary key," + LNR_NAME +
+        db.execSQL("create table " + TABLE_LINE_ROOMS + "(" + LNR_ID + " integer primary key AUTOINCREMENT," + LNR_NAME +
                 " text" + ");");
 
-        db.execSQL("create table " + TABLE_LINES + "(" + LN_ID + " integer primary key," + LN_NAME +
+        db.execSQL("create table " + TABLE_LINES + "(" + LN_ID + " integer primary key AUTOINCREMENT," + LN_NAME +
                 " text," + LN_ID_ROOM + " integer" + ");");
 
         db.execSQL("create table " + TABLE_GROUPS + "(" + GR_ID + " integer primary key AUTOINCREMENT," + GR_LINE_ID + " integer," + GR_NAME +

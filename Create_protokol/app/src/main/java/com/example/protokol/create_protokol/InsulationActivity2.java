@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class InsulationActivity2 extends AppCompatActivity {
 
     DBHelper dbHelper;
-    private int countlines = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +37,10 @@ public class InsulationActivity2 extends AppCompatActivity {
         final ListView lines = findViewById(R.id.lines);
         Button addLine = findViewById(R.id.button9);
         final String nameRoom = getIntent().getStringExtra("nameRoom");
-        final long idRoom = getIntent().getLongExtra("idRoom", 0);
+        final int idRoom = getIntent().getIntExtra("idRoom", 0);
 
         //ВЫВОД КОМНАТЫ
         room.setText(nameRoom);
-
-        //ПОЛУЧЕНИЕ ЗНАЧЕНИЯ СOUNTLINES
-        countlines = getCountline(database);
 
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ЩИТОВ
         addSpisokLines(database, lines, idRoom);
@@ -62,7 +58,6 @@ public class InsulationActivity2 extends AppCompatActivity {
         addLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                countlines++;
                 AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity2.this);
                 alert.setCancelable(false);
                 alert.setTitle("Введите название щита:");
@@ -72,7 +67,6 @@ public class InsulationActivity2 extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         final String nameLine = input.getText().toString();
                         ContentValues contentValues = new ContentValues();
-                        contentValues.put(DBHelper.LN_ID, countlines);
                         contentValues.put(DBHelper.LN_NAME, nameLine);
                         contentValues.put(DBHelper.LN_ID_ROOM, idRoom);
                         database.insert(DBHelper.TABLE_LINES, null, contentValues);
@@ -85,7 +79,7 @@ public class InsulationActivity2 extends AppCompatActivity {
                 });
                 alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        countlines = countlines - 1;
+
                     }
                 });
                 alert.show();
@@ -161,31 +155,6 @@ public class InsulationActivity2 extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     database.delete(DBHelper.TABLE_GROUPS, "grline_id = ?", new String[] {String.valueOf(lineId)});
                                     database.delete(DBHelper.TABLE_LINES, "_id = ?", new String[] {String.valueOf(lineId)});
-
-                                    //ЗАПРОС В БД И ИЗМЕНЕНИЕ КАЖДОГО ID ЩИТА КАК В ТАБЛИЦЕ ЩИТОВ, ТАК И В ТАБЛИЦЕ ГРУПП НА -1(ПОСЛЕ УДАЛЕННОГО ЭЛЕМЕНТА)
-                                    Cursor cursor = database.query(DBHelper.TABLE_LINES, new String[] {DBHelper.LN_ID}, "_id > ?", new String[] {String.valueOf(lineId)}, null, null, null);
-                                    if (cursor.moveToFirst()) {
-                                        int linechangeIndex = cursor.getColumnIndex(DBHelper.LN_ID);
-                                        do {
-                                            //В ТАБЛИЦЕ ЩИТОВ
-                                            ContentValues uppid = new ContentValues();
-                                            uppid.put(DBHelper.LN_ID, String.valueOf(cursor.getInt(linechangeIndex)-1));
-                                            database.update(DBHelper.TABLE_LINES,
-                                                    uppid,
-                                                    "_id = ?",
-                                                    new String[] {cursor.getString(linechangeIndex)});
-
-                                            //В ТАБЛИЦЕ ГРУПП
-                                            ContentValues uppidInGroup = new ContentValues();
-                                            uppidInGroup.put(DBHelper.GR_LINE_ID, String.valueOf(cursor.getInt(linechangeIndex)-1));
-                                            database.update(DBHelper.TABLE_GROUPS,
-                                                    uppidInGroup,
-                                                    "grline_id = ?",
-                                                    new String[] {cursor.getString(linechangeIndex)});
-                                        } while (cursor.moveToNext());
-                                        countlines = countlines - 1;
-                                    }
-                                    cursor.close();
                                     //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ЩИТОВ
                                     addSpisokLines(database, lines, idRoom);
                                     Toast toast2 = Toast.makeText(getApplicationContext(),
@@ -209,20 +178,7 @@ public class InsulationActivity2 extends AppCompatActivity {
         });
     }
 
-    int getCountline(SQLiteDatabase database) {
-        int numb_lines = 0;
-        Cursor cur = database.rawQuery("select count(*) as numb_lines from lines", new String[] { });
-        if (cur.moveToFirst()) {
-            int numbers_lineidIndex = cur.getColumnIndex("numb_lines");
-            do {
-                numb_lines = cur.getInt(numbers_lineidIndex);
-            } while (cur.moveToNext());
-        }
-        cur.close();
-        return numb_lines;
-    }
-
-    public void addSpisokLines(SQLiteDatabase database, ListView lines, long idRoom) {
+    public void addSpisokLines(SQLiteDatabase database, ListView lines, int idRoom) {
         final ArrayList<String> spisokLines = new ArrayList <String>();
         Cursor cursor = database.query(DBHelper.TABLE_LINES, new String[] {DBHelper.LN_NAME}, "lnr_id = ?", new String[] {String.valueOf(idRoom)}, null, null, null);
         if (cursor.moveToFirst()) {
