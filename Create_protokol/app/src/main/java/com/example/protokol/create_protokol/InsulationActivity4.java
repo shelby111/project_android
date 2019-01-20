@@ -50,15 +50,11 @@ public class InsulationActivity4 extends AppCompatActivity {
         Button save = findViewById(R.id.button17);
 
         final String nameRoom = getIntent().getStringExtra("nameRoom");
-        final long idRoom = getIntent().getLongExtra("idRoom", 0);
+        final int idRoom = getIntent().getIntExtra("idRoom", 0);
         final String nameLine = getIntent().getStringExtra("nameLine");
         final int idLine = getIntent().getIntExtra("idLine", 0);
         String nameGroup = getIntent().getStringExtra("nameGroup");
         final int idGroup = getIntent().getIntExtra("idGroup", -1);
-
-        final Toast toast = Toast.makeText(getApplicationContext(),
-                "АЙДИ ГРУППЫ - " + idGroup, Toast.LENGTH_SHORT);
-        toast.show();
 
         //ОПРЕДЕЛЯЕМ, СОЗДАЕМ ЛИ МЫ НОВУЮ ГРУППУ ИЛИ ИЗМЕНЯЕМ СТАРУЮ
         final boolean change;

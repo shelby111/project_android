@@ -190,7 +190,6 @@ public class InsulationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //ПРОСТО ОТКРЫТЬ ИЛИ С СОХРАНЕНИЕМ?
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(InsulationActivity.this);
-                builder1.setCancelable(false);
                 builder1.setPositiveButton("Посмотреть", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //ПРОСТО ПОСМОТРЕТЬ
