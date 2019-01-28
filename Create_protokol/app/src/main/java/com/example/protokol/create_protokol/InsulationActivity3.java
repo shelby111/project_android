@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +40,6 @@ public class InsulationActivity3 extends AppCompatActivity {
         TextView line = findViewById(R.id.textView7);
         final ListView groups = findViewById(R.id.groups);
         Button addGroup = findViewById(R.id.button9);
-        Button repeatGroup = findViewById(R.id.button8);
         final String nameRoom = getIntent().getStringExtra("nameRoom");
         final int idRoom = getIntent().getIntExtra("idRoom", 0);
         final String nameLine = getIntent().getStringExtra("nameLine");
@@ -83,7 +83,7 @@ public class InsulationActivity3 extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, final View view, final int position, final long id) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
                 alert.setTitle(((TextView) view).getText());
-                String arrayMenu[] = {"Посмотреть", "Редактировать", "Удалить группу"};
+                String arrayMenu[] = {"Посмотреть", "Редактировать", "Повторить группу", "Удалить группу"};
                 alert.setItems(arrayMenu, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -152,7 +152,7 @@ public class InsulationActivity3 extends AppCompatActivity {
                             });
                             builder4.setMessage("Раб. напряжение: " + workU + "\n" + "Марка: " + mark + "\n" +
                                 "Кол-во жил: " + vein + "\n" + "Сечение: " + section + "\n" +
-                                "Напряж. мегаомметра: " + u + "\n" + "Сопротивление: " + r + "\n" + "A-B: " + a_b + "\n" +
+                                "Напряж. мегаомметра: " + u + "\n" + "Доп. сопротивление: " + r + "\n" + "A-B: " + a_b + "\n" +
                                 "B-C: " + b_c + "\n" + "C-A: " + c_a + "\n" + "A-N: " + a_n + "\n" + "B-N: " + b_n + "\n" +
                                 "C-N: " + c_n + "\n" + "A-PE: " + a_pe + "\n" + "B-PE: " + b_pe + "\n" +
                                 "C-PE: " + c_pe + "\n" + "N-PE: " + n_pe + "\n" + "Вывод: " + conclusion);
@@ -173,8 +173,78 @@ public class InsulationActivity3 extends AppCompatActivity {
                             startActivity(intent);
                         }
 
-                        //УДАЛИТЬ ГРУППУ
+                        //ПОВТОРИТЬ ГРУППУ
                         if (which == 2) {
+                            final String nameGroup = "Гр " + String.valueOf(groups.getAdapter().getCount() + 1);
+                            String nameMark = "", numberVein = "", numberSection = "", numberWorkU = "", numberU = "", numberR = "";
+                            //ЗАПРОС В БД ДЛЯ ПОЛУЧЕНИЯ ИНФО О ГРУППЕ
+                            Cursor cursor = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_MARK,
+                                    DBHelper.GR_VEIN, DBHelper.GR_SECTION, DBHelper.GR_U1,
+                                    DBHelper.GR_U2, DBHelper.GR_R}, "_id= ?", new String[] {String.valueOf(groupId)}, null, null, null);
+                            if (cursor.moveToFirst()) {
+                                int markIndex = cursor.getColumnIndex(DBHelper.GR_MARK);
+                                int veinIndex = cursor.getColumnIndex(DBHelper.GR_VEIN);
+                                int sectionIndex = cursor.getColumnIndex(DBHelper.GR_SECTION);
+                                int workUIndex = cursor.getColumnIndex(DBHelper.GR_U1);
+                                int uIndex = cursor.getColumnIndex(DBHelper.GR_U2);
+                                int rIndex = cursor.getColumnIndex(DBHelper.GR_R);
+                                nameMark = cursor.getString(markIndex);
+                                numberVein = cursor.getString(veinIndex);
+                                numberSection = cursor.getString(sectionIndex);
+                                numberWorkU = cursor.getString(workUIndex);
+                                numberU = cursor.getString(uIndex);
+                                numberR = cursor.getString(rIndex);
+                            }
+                            cursor.close();
+
+                            //ЕСЛИ ОНА РЕЗЕРВ
+                            if (nameMark.equals("резерв")) {
+                                AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
+                                alert.setCancelable(false);
+                                alert.setMessage("Вы точно хотите добавить линию(резерв)?");
+                                alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        ContentValues contentValues = new ContentValues();
+                                        contentValues.put(DBHelper.GR_LINE_ID, idLine);
+                                        contentValues.put(DBHelper.GR_NAME, nameGroup);
+                                        contentValues.put(DBHelper.GR_U1, "-");
+                                        contentValues.put(DBHelper.GR_MARK, "резерв");
+                                        contentValues.put(DBHelper.GR_VEIN, "-");
+                                        contentValues.put(DBHelper.GR_SECTION, "-");
+                                        contentValues.put(DBHelper.GR_U2, "-");
+                                        contentValues.put(DBHelper.GR_R, "-");
+                                        contentValues.put(DBHelper.GR_PHASE, "-");
+                                        contentValues.put(DBHelper.GR_A_B, "-");
+                                        contentValues.put(DBHelper.GR_B_C, "-");
+                                        contentValues.put(DBHelper.GR_C_A, "-");
+                                        contentValues.put(DBHelper.GR_A_N, "-");
+                                        contentValues.put(DBHelper.GR_B_N, "-");
+                                        contentValues.put(DBHelper.GR_C_N, "-");
+                                        contentValues.put(DBHelper.GR_A_PE, "-");
+                                        contentValues.put(DBHelper.GR_B_PE, "-");
+                                        contentValues.put(DBHelper.GR_C_PE, "-");
+                                        contentValues.put(DBHelper.GR_N_PE, "-");
+                                        contentValues.put(DBHelper.GR_CONCLUSION, "-");
+                                        database.insert(DBHelper.TABLE_GROUPS, null, contentValues);
+                                        addSpisokGroups(database, groups, idLine);
+                                    }
+                                });
+                                alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    }
+                                });
+                                alert.show();
+                            }
+                            //ЕСЛИ НЕ РЕЗЕРВ
+                            else {
+                                changePhase(groups, database, idLine, nameGroup,
+                                        numberWorkU, nameMark, numberVein, numberSection, numberU, numberR);
+                            }
+                        }
+
+                        //УДАЛИТЬ ГРУППУ
+                        if (which == 3) {
 
                             //ПОДТВЕРЖДЕНИЕ
                             AlertDialog.Builder builder4 = new AlertDialog.Builder(InsulationActivity3.this);
@@ -222,94 +292,6 @@ public class InsulationActivity3 extends AppCompatActivity {
                 alert.show();
             }
         });
-
-        //ПОВТОРИТЬ ГРУППУ
-        repeatGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //ЗАПРОС В БД ДЛЯ ПОСЛЕДНЕЙ ГРУППЫ
-                Cursor cursor = database.query(DBHelper.TABLE_GROUPS, new String[] {DBHelper.GR_NAME, DBHelper.GR_MARK,
-                        DBHelper.GR_VEIN, DBHelper.GR_SECTION, DBHelper.GR_U1,
-                        DBHelper.GR_U2, DBHelper.GR_R}, "grline_id = ?", new String[] {String.valueOf(idLine)}, null, null, null);
-                cursor.moveToPosition(groups.getAdapter().getCount() - 1);
-                int nameGroupIndex = cursor.getColumnIndex(DBHelper.GR_NAME);
-                int markIndex = cursor.getColumnIndex(DBHelper.GR_MARK);
-                int veinIndex = cursor. getColumnIndex(DBHelper.GR_VEIN);
-                int sectionIndex = cursor. getColumnIndex(DBHelper.GR_SECTION);
-                int workUIndex = cursor. getColumnIndex(DBHelper.GR_U1);
-                int uIndex = cursor. getColumnIndex(DBHelper.GR_U2);
-                int rIndex = cursor. getColumnIndex(DBHelper.GR_R);
-                final String nameGroup = cursor.getString(nameGroupIndex);
-                String nameMark = cursor.getString(markIndex);
-                String numberVein = cursor.getString(veinIndex);
-                String numberSection = cursor.getString(sectionIndex);
-                String numberWorkU = cursor.getString(workUIndex);
-                String numberU = cursor.getString(uIndex);
-                String numberR = cursor.getString(rIndex);
-                cursor.close();
-
-                //ЕСЛИ ОНА РЕЗЕРВ
-                if (nameMark.equals("резерв")) {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
-                    alert.setCancelable(false);
-                    alert.setMessage("Вы точно хотите добавить линию(резерв)?");
-                    alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(DBHelper.GR_LINE_ID, idLine);
-                            contentValues.put(DBHelper.GR_NAME, "Гр " + String.valueOf(Integer.parseInt(nameGroup.substring(3)) + 1));
-                            contentValues.put(DBHelper.GR_U1, "-");
-                            contentValues.put(DBHelper.GR_MARK, "резерв");
-                            contentValues.put(DBHelper.GR_VEIN, "-");
-                            contentValues.put(DBHelper.GR_SECTION, "-");
-                            contentValues.put(DBHelper.GR_U2, "-");
-                            contentValues.put(DBHelper.GR_R, "-");
-                            contentValues.put(DBHelper.GR_PHASE, "-");
-                            contentValues.put(DBHelper.GR_A_B, "-");
-                            contentValues.put(DBHelper.GR_B_C, "-");
-                            contentValues.put(DBHelper.GR_C_A, "-");
-                            contentValues.put(DBHelper.GR_A_N, "-");
-                            contentValues.put(DBHelper.GR_B_N, "-");
-                            contentValues.put(DBHelper.GR_C_N, "-");
-                            contentValues.put(DBHelper.GR_A_PE, "-");
-                            contentValues.put(DBHelper.GR_B_PE, "-");
-                            contentValues.put(DBHelper.GR_C_PE, "-");
-                            contentValues.put(DBHelper.GR_N_PE, "-");
-                            contentValues.put(DBHelper.GR_CONCLUSION, "-");
-                            database.insert(DBHelper.TABLE_GROUPS, null, contentValues);
-                            addSpisokGroups(database, groups, idLine);
-                        }
-                    });
-                    alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-
-                        }
-                    });
-                alert.show();
-                }
-                //ЕСЛИ НЕ РЕЗЕРВ
-                else {
-                    //ЕСЛИ 2 ИЛИ 3 ЖИЛЫ
-                    if (numberVein.equals("2") || numberVein.equals("3")) {
-                        changePhase(groups, database, idLine, "Гр " + String.valueOf(Integer.parseInt(nameGroup.substring(3)) + 1),
-                                numberWorkU, nameMark, numberVein, numberSection, numberU, numberR);
-                    }
-                    //ЕСЛИ 4 ИЛИ 5 ЖИЛ
-                    else {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
-                        alert.setCancelable(false);
-                        alert.setMessage("Можно повторять группу, если у последней кол-во жил равно 2 или 3. При другом количестве жил выберете <Добавить группу>");
-                        alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-
-                            }
-                        });
-                        alert.show();
-                    }
-                }
-            }
-        });
     }
 
     public String getRandomNumber(String x) {
@@ -336,11 +318,17 @@ public class InsulationActivity3 extends AppCompatActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity3.this);
         View myView = getLayoutInflater().inflate(R.layout.dialog_for_repeat_group,null);
         alert.setCancelable(false);
-        alert.setTitle("Выберете фазу и введите значение:");
+        if (numberVein.equals("2") || numberVein.equals("3"))
+            alert.setTitle("Выберете фазу и введите значение:");
+        else
+            alert.setTitle("Введите значение сопротивления:");
+        final RadioGroup grradio = myView.findViewById(R.id.radioGroup);
         final RadioButton phaseA = myView.findViewById(R.id.phaseA);
         final RadioButton phaseB = myView.findViewById(R.id.phaseB);
         RadioButton phaseC = myView.findViewById(R.id.phaseC);
         final EditText input = myView.findViewById(R.id.editText2);
+        if (numberVein.equals("4") || numberVein.equals("5"))
+            grradio.setVisibility(View.GONE);
         alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String numb = input.getText().toString();
@@ -371,13 +359,17 @@ public class InsulationActivity3 extends AppCompatActivity {
                     }
                     else {
                         String namePhase;
-                        if (phaseA.isChecked())
-                            namePhase = "A";
-                        else
-                            if (phaseB.isChecked())
-                                namePhase = "B";
+                        if (numberVein.equals("2") || numberVein.equals("3")) {
+                            if (phaseA.isChecked())
+                                namePhase = "A";
                             else
-                                namePhase = "C";
+                                if (phaseB.isChecked())
+                                    namePhase = "B";
+                                else
+                                    namePhase = "C";
+                        }
+                        else
+                            namePhase = "-";
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(DBHelper.GR_LINE_ID, idLine);
                         contentValues.put(DBHelper.GR_NAME, nameGroup);
@@ -449,6 +441,32 @@ public class InsulationActivity3 extends AppCompatActivity {
                                 contentValues.put(DBHelper.GR_C_PE, getRandomNumber(numb));
                                 contentValues.put(DBHelper.GR_N_PE, getRandomNumber(numb));
                             }
+                        }
+                        //4 ЖИЛЫ
+                        if (numberVein.equals("4")) {
+                            contentValues.put(DBHelper.GR_A_B, numb);
+                            contentValues.put(DBHelper.GR_B_C, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_C_A, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_A_N, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_B_N, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_C_N, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_A_PE, "-");
+                            contentValues.put(DBHelper.GR_B_PE, "-");
+                            contentValues.put(DBHelper.GR_C_PE, "-");
+                            contentValues.put(DBHelper.GR_N_PE, "-");
+                        }
+                        //5 ЖИЛ
+                        if (numberVein.equals("5")) {
+                            contentValues.put(DBHelper.GR_A_B, numb);
+                            contentValues.put(DBHelper.GR_B_C, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_C_A, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_A_N, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_B_N, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_C_N, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_A_PE, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_B_PE, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_C_PE, getRandomNumber(numb));
+                            contentValues.put(DBHelper.GR_N_PE, getRandomNumber(numb));
                         }
                         database.insert(DBHelper.TABLE_GROUPS, null, contentValues);
                         addSpisokGroups(database, groups, idLine);

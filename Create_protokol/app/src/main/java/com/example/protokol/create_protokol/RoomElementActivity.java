@@ -298,7 +298,7 @@ public class RoomElementActivity extends AppCompatActivity {
                 if (conclusion.equals("не соответствует"))
                     NZ.add(String.valueOf(currentRoom) + "." + String.valueOf(currentElement));
                 element.add(String.valueOf(currentElement) + ".");
-                element.add(cursor.getString(elnameIndex));
+                element.add(" " + cursor.getString(elnameIndex));
                 element.add(cursor.getString(elnumberIndex));
                 element.add("0,05");
                 element.add(cursor.getString(elsoprIndex));

@@ -96,7 +96,7 @@ public class InsulationActivity4 extends AppCompatActivity {
                         section.setText("Сеченеие: -");
                         workU.setText("Рабочее напряжение: -");
                         u.setText("Напряжение мегаомметра: -");
-                        r.setText("Сопротивление: -");
+                        r.setText("Допустимое сопротивление: -");
                         phase.setText("Фаза: -");
                         number.setText("-");
                         break;
@@ -107,7 +107,7 @@ public class InsulationActivity4 extends AppCompatActivity {
                         section.setText("Сечение: " + cursor.getString(sectionIndex));
                         workU.setText("Рабочее напряжение: " + cursor.getString(workUIndex));
                         u.setText("Напряжение мегаомметра: " + cursor.getString(uIndex));
-                        r.setText("Сопротивление: " + cursor.getString(rIndex));
+                        r.setText("Допустимое сопротивление: " + cursor.getString(rIndex));
                         phase.setText("Фаза: " + namePhase);
                         //ЗАПОЛНЕНИЕ ЗНАЧЕНИЯ
                         switch (namePhase) {
@@ -140,7 +140,7 @@ public class InsulationActivity4 extends AppCompatActivity {
                     section.setText("Сечение: -");
                     workU.setText("Рабочее напряжение: -");
                     u.setText("Напряжение мегаомметра: -");
-                    r.setText("Сопротивление: -");
+                    r.setText("Допустимое сопротивление: -");
                     phase.setText("Фаза: -");
                     number.setText("-");
                 }
@@ -150,7 +150,7 @@ public class InsulationActivity4 extends AppCompatActivity {
                     section.setText("Сечение: Не выбрано");
                     workU.setText("Рабочее напряжение: Не выбрано");
                     u.setText("Напряжение мегаомметра: 1000");
-                    r.setText("Сопротивление: 0,5");
+                    r.setText("Допустимое сопротивление: 0,5");
                     phase.setText("Фаза: Не выбрана");
                     number.setText("");
                 }
@@ -368,7 +368,7 @@ public class InsulationActivity4 extends AppCompatActivity {
                     alert.setItems(arrR, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            r.setText("Сопротивление: " + arrR[which]);
+                            r.setText("Допустимое сопротивление: " + arrR[which]);
                         }
                     });
                     alert.show();
@@ -506,7 +506,7 @@ public class InsulationActivity4 extends AppCompatActivity {
                         } else {
                             String namePhase = textPhase.substring(6);
                             String numberVein = textVein.substring(12);
-                            String numberR = textR.substring(15);
+                            String numberR = textR.substring(26);
                             //ЗАПОЛНЕНИЕ НОВОЙ СТРОКИ
                             ContentValues contentValues = new ContentValues();
                             if (change)

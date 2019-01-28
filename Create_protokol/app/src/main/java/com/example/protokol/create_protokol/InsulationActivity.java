@@ -292,7 +292,7 @@ public class InsulationActivity extends AppCompatActivity {
                     groups = new ArrayList<>();
                     linePrev = l_id;
                     currentLine++;
-                    templatePDF.addLineInsulation(String.valueOf(currentLine) + ". ", cursor.getString(nameLineIndex));
+                    templatePDF.addLineInsulation(String.valueOf(currentLine) + ". ", " " + cursor.getString(nameLineIndex));
                 }
                 String vein = cursor.getString(veinIndex);
                 group.add(cursor.getString(nameGroupIndex));

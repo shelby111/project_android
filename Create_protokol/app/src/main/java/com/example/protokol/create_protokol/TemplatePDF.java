@@ -10,9 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.ExceptionConverter;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
@@ -20,17 +18,12 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfPageEventHelper;
-import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.FontFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 public class TemplatePDF {
     public static final String FONTBD = "res/font/timesbd.ttf";
@@ -165,7 +158,7 @@ public class TemplatePDF {
             paragraph = new Paragraph();
             paragraph.setFont(font);
             PdfPTable pdfPTable = new PdfPTable(header.length);
-            float[] columnWidths = new float[]{10f, 30f, 19f, 16f, 16f, 30f};
+            float[] columnWidths = new float[]{5.29f, 32.3f, 14.11f, 14.11f, 14.11f, 20f};
             pdfPTable.setWidths(columnWidths);
             pdfPTable.setWidthPercentage(100);
             pdfPTable.setSpacingBefore(20);
@@ -196,7 +189,7 @@ public class TemplatePDF {
             paragraph = new Paragraph();
             paragraph.setFont(fontbd);
             PdfPTable pdfPTable = new PdfPTable(6);
-            float[] columnWidths = new float[]{10f, 30f, 19f, 16f, 16f, 30f};
+            float[] columnWidths = new float[]{5.29f, 32.3f, 14.11f, 14.11f, 14.11f, 20f};
             pdfPTable.setWidths(columnWidths);
             pdfPTable.setWidthPercentage(100);
             PdfPCell pdfPCell;
@@ -243,7 +236,7 @@ public class TemplatePDF {
             paragraph = new Paragraph();
             paragraph.setFont(font);
             PdfPTable pdfPTable = new PdfPTable(6);
-            float[] columnWidths = new float[]{10f, 30f, 19f, 16f, 16f, 30f};
+            float[] columnWidths = new float[]{5.29f, 32.3f, 14.11f, 14.11f, 14.11f, 20f};
             pdfPTable.setWidths(columnWidths);
             pdfPTable.setWidthPercentage(100);
             PdfPCell pdfPCell;
@@ -265,7 +258,10 @@ public class TemplatePDF {
             for (i = 0; i < elements.size(); i++) {
                 for (j = 0; j < 6; j++) {
                     pdfPCell = new PdfPCell(new Phrase(String.valueOf(elements.get(i).get(j)), font));
-                    pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    if (j != 1)
+                        pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    else
+                        pdfPCell.setHorizontalAlignment(Element.ALIGN_LEFT);
                     pdfPTable.addCell(pdfPCell);
                 }
             }
@@ -469,7 +465,7 @@ public class TemplatePDF {
                     else
                         if (i == 10) {
                             pdfPCell = new PdfPCell(new Phrase(nameLine, font));
-                            pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            pdfPCell.setHorizontalAlignment(Element.ALIGN_LEFT);
                             pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                             pdfPTable.addCell(pdfPCell);
                         }

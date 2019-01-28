@@ -75,28 +75,13 @@
         android:id="@+id/button9"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="24dp"
         android:background="#708ea9"
         android:text="Добавить группу"
         android:textColor="@color/fon"
-        app:layout_constraintBottom_toTopOf="@+id/button8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/groups" />
-
-    <Button
-        android:id="@+id/button8"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="24dp"
-        android:background="#708ea9"
-        android:text="Повторить группу"
-        android:textColor="@color/fon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button9" />
+        app:layout_constraintTop_toBottomOf="@+id/groups" />
 
 </android.support.constraint.ConstraintLayout>
