@@ -8,10 +8,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,8 @@ import java.util.Random;
 public class InsulationActivity4 extends AppCompatActivity {
 
     DBHelper dbHelper;
+    String nameRoom, nameLine;
+    int idRoom, idLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,35 +37,43 @@ public class InsulationActivity4 extends AppCompatActivity {
         final TextView group = findViewById(R.id.textView8);
         final Switch reserve = findViewById(R.id.switch3);
         final TextView mark = findViewById(R.id.textView12);
-        Button chooseMark = findViewById(R.id.button10);
+        ImageButton chooseMark = findViewById(R.id.button10);
         final TextView vein = findViewById(R.id.textView13);
-        Button chooseVein = findViewById(R.id.button11);
+        ImageButton chooseVein = findViewById(R.id.button11);
         final TextView section = findViewById(R.id.textView14);
-        Button chooseSection = findViewById(R.id.button12);
+        ImageButton chooseSection = findViewById(R.id.button12);
         final TextView workU = findViewById(R.id.textView15);
-        Button chooseWorkU = findViewById(R.id.button13);
+        ImageButton chooseWorkU = findViewById(R.id.button13);
         final TextView u = findViewById(R.id.textView16);
-        Button chooseU = findViewById(R.id.button14);
+        ImageButton chooseU = findViewById(R.id.button14);
         final TextView r = findViewById(R.id.textView17);
-        Button chooseR = findViewById(R.id.button15);
+        ImageButton chooseR = findViewById(R.id.button15);
         final TextView phase = findViewById(R.id.textView18);
-        Button choosePhase = findViewById(R.id.button16);
+        ImageButton choosePhase = findViewById(R.id.button16);
         final EditText number = findViewById(R.id.editText2);
         Button save = findViewById(R.id.button17);
 
-        final String nameRoom = getIntent().getStringExtra("nameRoom");
-        final int idRoom = getIntent().getIntExtra("idRoom", 0);
-        final String nameLine = getIntent().getStringExtra("nameLine");
-        final int idLine = getIntent().getIntExtra("idLine", 0);
+        nameRoom = getIntent().getStringExtra("nameRoom");
+        idRoom = getIntent().getIntExtra("idRoom", 0);
+        nameLine = getIntent().getStringExtra("nameLine");
+        idLine = getIntent().getIntExtra("idLine", 0);
         String nameGroup = getIntent().getStringExtra("nameGroup");
         final int idGroup = getIntent().getIntExtra("idGroup", -1);
 
+        //НАСТРАИВАЕМ ACTIONBAR
+        getSupportActionBar().setTitle("Изоляция");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //ОПРЕДЕЛЯЕМ, СОЗДАЕМ ЛИ МЫ НОВУЮ ГРУППУ ИЛИ ИЗМЕНЯЕМ СТАРУЮ
         final boolean change;
-        if (idGroup != -1)
+        if (idGroup != -1) {
             change = true;
-        else
+            getSupportActionBar().setSubtitle("Редактирование группы");
+        }
+        else {
             change = false;
+            getSupportActionBar().setSubtitle("Добавление группы");
+        }
 
         //ДЕЛАЕМ ПЕРЕКЛЮЧАТЕЛЬ ВЫКЛЮЧЕННЫМ ПО УМОЛЧАНИЮ
         reserve.setChecked(false);
@@ -94,9 +106,9 @@ public class InsulationActivity4 extends AppCompatActivity {
                         reserve.setChecked(true);
                         vein.setText("Кол-во жил: -");
                         section.setText("Сеченеие: -");
-                        workU.setText("Рабочее напряжение: -");
-                        u.setText("Напряжение мегаомметра: -");
-                        r.setText("Допустимое сопротивление: -");
+                        workU.setText("Раб. напряжение: -");
+                        u.setText("Напр. мегаомметра: -");
+                        r.setText("Доп. сопротивление: -");
                         phase.setText("Фаза: -");
                         number.setText("-");
                         break;
@@ -105,9 +117,9 @@ public class InsulationActivity4 extends AppCompatActivity {
                         String namePhase = cursor.getString(phaseIndex);
                         vein.setText("Кол-во жил: " + cursor.getString(veinIndex));
                         section.setText("Сечение: " + cursor.getString(sectionIndex));
-                        workU.setText("Рабочее напряжение: " + cursor.getString(workUIndex));
-                        u.setText("Напряжение мегаомметра: " + cursor.getString(uIndex));
-                        r.setText("Допустимое сопротивление: " + cursor.getString(rIndex));
+                        workU.setText("Раб. напряжение: " + cursor.getString(workUIndex));
+                        u.setText("Напр. мегаомметра: " + cursor.getString(uIndex));
+                        r.setText("Доп. сопротивление: " + cursor.getString(rIndex));
                         phase.setText("Фаза: " + namePhase);
                         //ЗАПОЛНЕНИЕ ЗНАЧЕНИЯ
                         switch (namePhase) {
@@ -138,9 +150,9 @@ public class InsulationActivity4 extends AppCompatActivity {
                     mark.setText("Марка: резерв");
                     vein.setText("Кол-во жил: -");
                     section.setText("Сечение: -");
-                    workU.setText("Рабочее напряжение: -");
-                    u.setText("Напряжение мегаомметра: -");
-                    r.setText("Допустимое сопротивление: -");
+                    workU.setText("Раб. напряжение: -");
+                    u.setText("Напр. мегаомметра: -");
+                    r.setText("Доп. сопротивление: -");
                     phase.setText("Фаза: -");
                     number.setText("-");
                 }
@@ -148,9 +160,9 @@ public class InsulationActivity4 extends AppCompatActivity {
                     mark.setText("Марка: Не выбрана");
                     vein.setText("Кол-во жил: Не выбрано");
                     section.setText("Сечение: Не выбрано");
-                    workU.setText("Рабочее напряжение: Не выбрано");
-                    u.setText("Напряжение мегаомметра: 1000");
-                    r.setText("Допустимое сопротивление: 0,5");
+                    workU.setText("Раб. напряжение: Не выбрано");
+                    u.setText("Напр. мегаомметра: 1000");
+                    r.setText("Доп. сопротивление: 0,5");
                     phase.setText("Фаза: Не выбрана");
                     number.setText("");
                 }
@@ -163,6 +175,7 @@ public class InsulationActivity4 extends AppCompatActivity {
             public void onClick(View v) {
                 if (!reserve.isChecked()) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
+                    alert.setCancelable(false);
                     alert.setTitle("Выберете марку:");
                     final String marks[] = {"ПВС", "ВВГ", "АВВГ", "ПУНП", "АПУНП", "ШВВП", "АПВ", "ПВ", "ПВ3"};
                     alert.setItems(marks, new DialogInterface.OnClickListener() {
@@ -192,6 +205,11 @@ public class InsulationActivity4 extends AppCompatActivity {
                             alert1.show();
                         }
                     });
+                    alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        }
+                    });
                     alert.show();
                 }
                 else {
@@ -215,6 +233,7 @@ public class InsulationActivity4 extends AppCompatActivity {
             public void onClick(View v) {
                 if (!reserve.isChecked()) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
+                    alert.setCancelable(false);
                     alert.setTitle("Выберете кол-во жил:");
                     final String veins[] = {"2", "3", "4", "5"};
                     alert.setItems(veins, new DialogInterface.OnClickListener() {
@@ -223,6 +242,11 @@ public class InsulationActivity4 extends AppCompatActivity {
                             vein.setText("Кол-во жил: " + veins[which]);
                             if (which == 2 || which == 3)
                                 phase.setText("Фаза: -");
+                        }
+                    });
+                    alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
                         }
                     });
                     alert.show();
@@ -248,6 +272,7 @@ public class InsulationActivity4 extends AppCompatActivity {
             public void onClick(View v) {
                 if (!reserve.isChecked()) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
+                    alert.setCancelable(false);
                     alert.setTitle("Выберете сечение:");
                     final String sectoins[] = {"0,5", "0,75", "1", "1,5", "2,5", "4", "6", "10", "16", "25", "35", "50", "70", "95", "120", "150", "185", "240"};
                     alert.setItems(sectoins, new DialogInterface.OnClickListener() {
@@ -278,6 +303,11 @@ public class InsulationActivity4 extends AppCompatActivity {
                             alert1.show();
                         }
                     });
+                    alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        }
+                    });
                     alert.show();
                 }
                 else {
@@ -301,12 +331,18 @@ public class InsulationActivity4 extends AppCompatActivity {
             public void onClick(View v) {
                 if (!reserve.isChecked()) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
+                    alert.setCancelable(false);
                     alert.setTitle("Выберете рабочее напряжение:");
                     final String arrWorkU[] = {"220", "380"};
                     alert.setItems(arrWorkU, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            workU.setText("Рабочее напряжение: " + arrWorkU[which]);
+                            workU.setText("Раб. напряжение: " + arrWorkU[which]);
+                        }
+                    });
+                    alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
                         }
                     });
                     alert.show();
@@ -332,12 +368,18 @@ public class InsulationActivity4 extends AppCompatActivity {
             public void onClick(View v) {
                 if (!reserve.isChecked()) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
+                    alert.setCancelable(false);
                     alert.setTitle("Выберете напряжение мегаомметра:");
                     final String arrU[] = {"500", "1000", "2500"};
                     alert.setItems(arrU, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            u.setText("Напряжение мегаомметра: " + arrU[which]);
+                            u.setText("Напр. мегаомметра: " + arrU[which]);
+                        }
+                    });
+                    alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
                         }
                     });
                     alert.show();
@@ -363,12 +405,18 @@ public class InsulationActivity4 extends AppCompatActivity {
             public void onClick(View v) {
                 if (!reserve.isChecked()) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
-                    alert.setTitle("Выберете сопротивление:");
+                    alert.setCancelable(false);
+                    alert.setTitle("Выберете допустимое сопротивление:");
                     final String arrR[] = {"0,5", "1"};
                     alert.setItems(arrR, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            r.setText("Допустимое сопротивление: " + arrR[which]);
+                            r.setText("Доп. сопротивление: " + arrR[which]);
+                        }
+                    });
+                    alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
                         }
                     });
                     alert.show();
@@ -407,12 +455,18 @@ public class InsulationActivity4 extends AppCompatActivity {
                 else {
                     if (!reserve.isChecked()) {
                         AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
+                        alert.setCancelable(false);
                         alert.setTitle("Выберете фазу:");
                         final String phases[] = {"A", "B", "C"};
                         alert.setItems(phases, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 phase.setText("Фаза: " + phases[which]);
+                            }
+                        });
+                        alert.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
                             }
                         });
                         alert.show();
@@ -448,7 +502,7 @@ public class InsulationActivity4 extends AppCompatActivity {
                 String numb = number.getText().toString();
                 //ПРОВЕРКА НА ВВОД ВСЕХ ДАННЫХ
                 if (numb.equals("") || textMark.equals("Марка: Не выбрана") || textVein.equals("Кол-во жил: Не выбрано") ||
-                    textSection.equals("Сечение: Не выбрано") || textWorkU.equals("Рабочее напряжение: Не выбрано") ||
+                    textSection.equals("Сечение: Не выбрано") || textWorkU.equals("Раб. напряжение: Не выбрано") ||
                     textPhase.equals("Фаза: Не выбрана") || (textVein.equals("Кол-во жил: 2") && textPhase.equals("Фаза: -")) ||
                     (textVein.equals("Кол-во жил: 3") && textPhase.equals("Фаза: -"))) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity4.this);
@@ -506,18 +560,18 @@ public class InsulationActivity4 extends AppCompatActivity {
                         } else {
                             String namePhase = textPhase.substring(6);
                             String numberVein = textVein.substring(12);
-                            String numberR = textR.substring(26);
+                            String numberR = textR.substring(20);
                             //ЗАПОЛНЕНИЕ НОВОЙ СТРОКИ
                             ContentValues contentValues = new ContentValues();
                             if (change)
                                 contentValues.put(DBHelper.GR_ID, idGroup);
                             contentValues.put(DBHelper.GR_LINE_ID, idLine);
                             contentValues.put(DBHelper.GR_NAME, "Гр " + Integer.parseInt(textName.substring(8)));
-                            contentValues.put(DBHelper.GR_U1, textWorkU.substring(20));
+                            contentValues.put(DBHelper.GR_U1, textWorkU.substring(17));
                             contentValues.put(DBHelper.GR_MARK, textMark.substring(7));
                             contentValues.put(DBHelper.GR_VEIN, numberVein);
                             contentValues.put(DBHelper.GR_SECTION, textSection.substring(9));
-                            contentValues.put(DBHelper.GR_U2, textU.substring(24));
+                            contentValues.put(DBHelper.GR_U2, textU.substring(19));
                             contentValues.put(DBHelper.GR_R, numberR);
                             contentValues.put(DBHelper.GR_PHASE, namePhase);
                             if (Double.parseDouble(numb.replace(",", ".")) >= Double.parseDouble(numberR.replace(",", ".")))
@@ -624,6 +678,22 @@ public class InsulationActivity4 extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    //НАЗАД
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent("android.intent.action.Insulation3");
+                intent.putExtra("nameRoom", nameRoom);
+                intent.putExtra("idRoom", idRoom);
+                intent.putExtra("nameLine", nameLine);
+                intent.putExtra("idLine", idLine);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public String getRandomNumber(String x) {

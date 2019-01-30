@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -46,22 +47,17 @@ public class InsulationActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        ImageView back = findViewById(R.id.imageView);
         final ListView rooms = findViewById(R.id.rooms);
         Button addRoom = findViewById(R.id.button9);
         Button pdf = findViewById(R.id.button8);
 
+        //НАСТРАИВАЕМ ACTIONBAR
+        getSupportActionBar().setSubtitle("Комнаты");
+        getSupportActionBar().setTitle("Изоляция");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
         addSpisokRooms(database, rooms);
-
-        //НАЗАД
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(InsulationActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
 
         //ДОБАВИТЬ КОМНАТУ
         addRoom.setOnClickListener(new View.OnClickListener() {
@@ -225,6 +221,18 @@ public class InsulationActivity extends AppCompatActivity {
                 dialog1.show();
             }
         });
+    }
+
+    //НАЗАД
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(InsulationActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void start(String namefile) {

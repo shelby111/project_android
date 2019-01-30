@@ -1,5 +1,6 @@
 package com.example.protokol.create_protokol;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -8,7 +9,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
+
 import java.util.ArrayList;
 
 public class RoomElementActivity extends AppCompatActivity {
@@ -53,22 +58,17 @@ public class RoomElementActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        ImageView back = findViewById(R.id.imageView);
         final ListView rooms = findViewById(R.id.rooms);
         Button addRoom = findViewById(R.id.button9);
         Button pdf = findViewById(R.id.button8);
 
+        //НАСТРАИВАЕМ ACTIONBAR
+        getSupportActionBar().setSubtitle("Комнаты");
+        getSupportActionBar().setTitle("Заземл. уст. и элементы");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА КОМНАТ
         addSpisokRooms(database, rooms);
-
-        //НАЗАД
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RoomElementActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
 
         //ДОБАВИТЬ КОМНАТУ
         addRoom.setOnClickListener(new View.OnClickListener() {
@@ -232,6 +232,18 @@ public class RoomElementActivity extends AppCompatActivity {
                 dialog1.show();
             }
         });
+    }
+
+    //НАЗАД
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(RoomElementActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //ДОБАВЛЕНИЕ В PDF ЗАГОЛОВКОВ

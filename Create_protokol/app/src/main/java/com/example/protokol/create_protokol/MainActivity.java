@@ -1,5 +1,6 @@
 package com.example.protokol.create_protokol;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -21,7 +24,11 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        Button updatebase = findViewById(R.id.button6);
+        Button updatebase = findViewById(R.id.button24);
+
+        //НАСТРАИВАЕМ ACTIONBAR
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.actionbar_main);
 
         //ОБНОВЛЕНИЕ БАЗЫ ДАННЫХ
         updatebase.setOnClickListener(new View.OnClickListener() {

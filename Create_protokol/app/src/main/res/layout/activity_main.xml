@@ -6,202 +6,186 @@
     android:layout_height="match_parent"
     android:background="@color/fon"
     tools:context=".MainActivity"
-    tools:layout_editor_absoluteY="25dp">
+    tools:layout_editor_absoluteY="81dp">
 
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="26dp"
-        android:layout_marginTop="16dp"
-        android:text="Выберете пункт:"
-        android:textColor="@color/text"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button13"
-        app:layout_constraintEnd_toEndOf="@+id/button12"
-        app:layout_constraintStart_toEndOf="@+id/button12"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button12"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginStart="16dp"
-        android:background="#708ea9"
-        android:text="Титульный лист"
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button13"
-        app:layout_constraintEnd_toStartOf="@+id/button13"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button13"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="#708ea9"
-        android:text="Содержание"
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/button14"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button12"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-    <Button
-        android:id="@+id/button14"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="#708ea9"
-        android:text="Рез. виз. осмотра"
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/button16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button15"
-        app:layout_constraintTop_toBottomOf="@+id/button13" />
-
-    <Button
-        android:id="@+id/button15"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginStart="16dp"
-        android:background="#708ea9"
-        android:text="Заключение"
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button14"
-        app:layout_constraintEnd_toStartOf="@+id/button14"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button16"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="#708ea9"
-        android:text='Рез.пров. согласов. петли "фаза-нуль"'
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/button19"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button17"
-        app:layout_constraintTop_toBottomOf="@+id/button14" />
-
-    <Button
-        android:id="@+id/button17"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginStart="16dp"
-        android:background="#708ea9"
-        android:onClick="insulation"
-        android:text="Рез.пров. сопрот. изоляции пров. и каб."
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button16"
-        app:layout_constraintEnd_toStartOf="@+id/button16"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button18"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="9dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="#708ea9"
-        android:text="Рез. пров. авт. выключателей"
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/button6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button21"
-        app:layout_constraintTop_toBottomOf="@+id/button19" />
-
-    <Button
-        android:id="@+id/button19"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="11dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="#708ea9"
-        android:text="рез.пров. устр. диффер. защиты"
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/button18"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button20"
-        app:layout_constraintTop_toBottomOf="@+id/button16" />
-
-    <Button
-        android:id="@+id/button20"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginStart="16dp"
-        android:background="#708ea9"
-        android:text="рез.пров. сопр. заземл. и заземл.устр."
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button19"
-        app:layout_constraintEnd_toStartOf="@+id/button19"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button21"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginStart="16dp"
-        android:background="#708ea9"
-        android:onClick="roomElement"
-        android:text="рез. пров. наличия цепи между з.уст. и элем. з.уст."
-        android:textColor="@color/fon"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/button18"
-        app:layout_constraintEnd_toStartOf="@+id/button18"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button18" />
-
-    <Button
-        android:id="@+id/button6"
-        android:layout_width="329dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="43dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@color/textbutton"
-        android:onClick="updatebase"
-        android:text="Удаление данных"
-        android:textColor="@color/fon"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button18" />
+        app:layout_constraintTop_toTopOf="parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button5"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="7dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:text="Основные данные"
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:text="Содержание"
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button7"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="7dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:text="Заключение"
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/button6"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:text="Визуальный осмотр"
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button19"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="7dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:text="Изоляция"
+                android:onClick="insulation"
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/button18"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:text='"фаза-нуль"'
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button21"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="7dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:text="Автоматические выключатели"
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/button20"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:text="Дифференциальная защита"
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button23"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="7dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:onClick="roomElement"
+                android:text="Заземл. установки и элементы"
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/button22"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:text="Заземлители и заземл. устройства"
+                android:textColor="@color/fon"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button24"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/another_buttons"
+            android:text="Удаление данных"
+            android:textColor="@color/fon" />
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

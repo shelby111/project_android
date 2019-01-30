@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,27 +33,22 @@ public class InsulationActivity2 extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        ImageView back = findViewById(R.id.imageView);
         TextView room = findViewById(R.id.textView6);
         final ListView lines = findViewById(R.id.lines);
         Button addLine = findViewById(R.id.button9);
         final String nameRoom = getIntent().getStringExtra("nameRoom");
         final int idRoom = getIntent().getIntExtra("idRoom", 0);
 
+        //НАСТРАИВАЕМ ACTIONBAR
+        getSupportActionBar().setSubtitle("Щиты");
+        getSupportActionBar().setTitle("Изоляция");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //ВЫВОД КОМНАТЫ
-        room.setText(nameRoom);
+        room.setText("Комната: " + nameRoom);
 
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ЩИТОВ
         addSpisokLines(database, lines, idRoom);
-
-        //НАЗАД
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("android.intent.action.Insulation");
-                startActivity(intent);
-            }
-        });
 
         //ДОБАВИТЬ ЩИТ
         addLine.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +172,18 @@ public class InsulationActivity2 extends AppCompatActivity {
                 alert.show();
             }
         });
+    }
+
+    //НАЗАД
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent("android.intent.action.Insulation");
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void addSpisokLines(SQLiteDatabase database, ListView lines, int idRoom) {

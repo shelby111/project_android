@@ -6,17 +6,22 @@
     android:layout_height="match_parent"
     android:background="@color/fon"
     tools:context=".InsulationActivity4"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:layout_editor_absoluteY="25dp">
 
     <ScrollView
         android:id="@+id/scroll"
-        android:layout_width="368dp"
-        android:layout_height="450dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
         app:layout_constraintBottom_toTopOf="@+id/button17"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -32,255 +37,248 @@
                 android:gravity="center"
                 android:text="Группа №"
                 android:textColor="@color/text"
-                android:textSize="24sp" />
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="300dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="42dp"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="42dp"
-                android:layout_marginRight="42dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/text" />
+                android:textSize="20sp" />
 
             <Switch
                 android:id="@+id/switch3"
-                android:layout_width="135dp"
+                android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="10dp"
                 android:text="Резерв"
                 android:textColor="@color/text"
                 android:textSize="18sp" />
 
-            <View
-                android:id="@+id/view1"
-                android:layout_width="300dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="42dp"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="42dp"
-                android:layout_marginRight="42dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/text" />
-
-            <TextView
-                android:id="@+id/textView12"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Марка: Не выбрана"
-                android:textColor="@color/text"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button10"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="#708ea9"
-                android:text="Выбрать марку"
-                android:textColor="@color/fon" />
+                <ImageButton
+                    android:id="@+id/button10"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/buttons2"
+                    android:adjustViewBounds="true"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/menu" />
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="300dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="42dp"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="42dp"
-                android:layout_marginRight="42dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/text" />
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_weight="8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+                    android:text="Марка: Не выбрана"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView13"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Кол-во жил: Не выбрано"
-                android:textColor="@color/text"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button11"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="#708ea9"
-                android:text="Выбрать кол-во жил"
-                android:textColor="@color/fon" />
+                <ImageButton
+                    android:id="@+id/button11"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/buttons2"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/menu" />
 
-            <TextView
-                android:id="@+id/textView14"
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_weight="8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+                    android:text="Кол-во жил: Не выбрано"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:gravity="center"
-                android:text="Сечение: Не выбрано"
-                android:textColor="@color/text"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button12"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="#708ea9"
-                android:text="Выбрать сечение"
-                android:textColor="@color/fon" />
+                <ImageButton
+                    android:id="@+id/button12"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/buttons2"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/menu" />
 
-            <View
-                android:id="@+id/view3"
-                android:layout_width="300dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="42dp"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="42dp"
-                android:layout_marginRight="42dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/text" />
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_weight="8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:text="Сечение: Не выбрано"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView15"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Рабочее напряжение: Не выбрано"
-                android:textColor="@color/text"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button13"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="#708ea9"
-                android:text="Выбрать рабочее напряжение"
-                android:textColor="@color/fon" />
+                <ImageButton
+                    android:id="@+id/button13"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/buttons2"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/menu" />
 
-            <View
-                android:id="@+id/view4"
-                android:layout_width="300dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="42dp"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="42dp"
-                android:layout_marginRight="42dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/text" />
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="8"
+                    android:gravity="center_vertical"
+                    android:text="Раб. напряжение: Не выбрано"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView16"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Напряжение мегаомметра: 1000"
-                android:textColor="@color/text"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button14"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="#708ea9"
-                android:text="Выбрать напряжение мегаомметра"
-                android:textColor="@color/fon" />
+                <ImageButton
+                    android:id="@+id/button14"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/buttons2"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/menu" />
 
-            <View
-                android:id="@+id/view5"
-                android:layout_width="300dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="42dp"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="42dp"
-                android:layout_marginRight="42dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/text" />
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="8"
+                    android:gravity="center_vertical"
+                    android:text="Напр. мегаомметра: 1000"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView17"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Допустимое сопротивление: 0,5"
-                android:textColor="@color/text"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button15"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="#708ea9"
-                android:text="Выбрать сопротивление"
-                android:textColor="@color/fon" />
+                <ImageButton
+                    android:id="@+id/button15"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/buttons2"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/menu" />
 
-            <View
-                android:id="@+id/view6"
-                android:layout_width="300dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="42dp"
-                android:layout_marginLeft="42dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="42dp"
-                android:layout_marginRight="42dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/text" />
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="8"
+                    android:gravity="center_vertical"
+                    android:text="Доп. сопротивление: 0,5"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView18"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Фаза: Не выбрана"
-                android:textColor="@color/text"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button16"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="#708ea9"
-                android:text="Выбрать фазу"
-                android:textColor="@color/fon" />
+                <ImageButton
+                    android:id="@+id/button16"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/buttons2"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/menu" />
 
-            <TextView
-                android:id="@+id/textView19"
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_weight="8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+                    android:text="Фаза: Не выбрана"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:gravity="center"
-                android:text="Введите значение:"
-                android:textColor="@color/text"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editText2"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ems="10"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:digits="0123456789,"
-                android:textColor="@color/text" />
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:text="Введите значение:"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/editText2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:digits="0123456789,"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/text" />
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -288,11 +286,15 @@
 
     <Button
         android:id="@+id/button17"
-        android:layout_width="350dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="24dp"
-        android:background="@color/textbutton"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/buttons2"
         android:text="Cохранить"
         android:textColor="@color/fon"
         app:layout_constraintBottom_toBottomOf="parent"

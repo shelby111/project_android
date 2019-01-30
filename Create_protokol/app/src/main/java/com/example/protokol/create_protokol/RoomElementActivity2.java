@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -39,31 +40,22 @@ public class RoomElementActivity2 extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        ImageView back = findViewById(R.id.imageView);
         TextView room = findViewById(R.id.textView6);
         final ListView listElements = findViewById(R.id.elements);
         Button addElement = findViewById(R.id.button9);
         final String nameRoom = getIntent().getStringExtra("nameRoom");
         final int idRoom = getIntent().getIntExtra("idRoom", 0);
 
-        Toast toast2 = Toast.makeText(getApplicationContext(),
-                "Комната <" + idRoom + ">", Toast.LENGTH_SHORT);
-        toast2.show();
+        //НАСТРАИВАЕМ ACTIONBAR
+        getSupportActionBar().setSubtitle("Элементы");
+        getSupportActionBar().setTitle("Заземл. уст. и элементы");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //ВЫВОД КОМНАТЫ
-        room.setText(nameRoom);
+        room.setText("Комната: " + nameRoom);
 
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ЩИТОВ
         addSpisokElements(database, listElements, idRoom);
-
-        //НАЗАД
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("android.intent.action.RoomElement");
-                startActivity(intent);
-            }
-        });
 
         //ДОБАВИТЬ ЭЛЕМЕНТ
         addElement.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +148,18 @@ public class RoomElementActivity2 extends AppCompatActivity {
                 alert.show();
             }
         });
+    }
+
+    //НАЗАД
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent("android.intent.action.RoomElement");
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //ИЗМЕНЕНИЕ ЭЛЕМЕНТА С РЕКУРСИЕЙ

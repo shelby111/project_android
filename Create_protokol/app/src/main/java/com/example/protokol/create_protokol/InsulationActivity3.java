@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +27,8 @@ import java.util.Random;
 public class InsulationActivity3 extends AppCompatActivity {
 
     DBHelper dbHelper;
+    String nameRoom;
+    int idRoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,33 +38,26 @@ public class InsulationActivity3 extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        ImageView back = findViewById(R.id.imageView);
         TextView room = findViewById(R.id.textView6);
         TextView line = findViewById(R.id.textView7);
         final ListView groups = findViewById(R.id.groups);
         Button addGroup = findViewById(R.id.button9);
-        final String nameRoom = getIntent().getStringExtra("nameRoom");
-        final int idRoom = getIntent().getIntExtra("idRoom", 0);
+        nameRoom = getIntent().getStringExtra("nameRoom");
+        idRoom = getIntent().getIntExtra("idRoom", 0);
         final String nameLine = getIntent().getStringExtra("nameLine");
         final int idLine = getIntent().getIntExtra("idLine", 0);
 
+        //НАСТРАИВАЕМ ACTIONBAR
+        getSupportActionBar().setSubtitle("Группы");
+        getSupportActionBar().setTitle("Изоляция");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //ВЫВОД КОМНАТЫ И ЩИТА
-        room.setText(nameRoom);
-        line.setText(nameLine);
+        room.setText("Комната: " + nameRoom);
+        line.setText("Щит: " + nameLine);
 
         //ЗАПРОС В БД И ЗАПОЛНЕНИЕ СПИСКА ГРУПП
         addSpisokGroups(database, groups, idLine);
-
-        //НАЗАД
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("android.intent.action.Insulation2");
-                intent.putExtra("nameRoom", nameRoom);
-                intent.putExtra("idRoom", idRoom);
-                startActivity(intent);
-            }
-        });
 
         //ДОБАВИТЬ ГРУППУ
         addGroup.setOnClickListener(new View.OnClickListener() {
@@ -292,6 +288,20 @@ public class InsulationActivity3 extends AppCompatActivity {
                 alert.show();
             }
         });
+    }
+
+    //НАЗАД
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent("android.intent.action.Insulation2");
+                intent.putExtra("nameRoom", nameRoom);
+                intent.putExtra("idRoom", idRoom);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public String getRandomNumber(String x) {
