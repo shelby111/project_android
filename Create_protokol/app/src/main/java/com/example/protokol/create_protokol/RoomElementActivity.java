@@ -1,6 +1,5 @@
 package com.example.protokol.create_protokol;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -9,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -75,10 +71,10 @@ public class RoomElementActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(RoomElementActivity.this);
+                View myView = getLayoutInflater().inflate(R.layout.dialog_for_names,null);
                 alert.setCancelable(false);
                 alert.setTitle("Введите название комнаты:");
-                final EditText input = new EditText(RoomElementActivity.this);
-                alert.setView(input);
+                final EditText input = myView.findViewById(R.id.editText);
                 alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         final String nameRoom = input.getText().toString();
@@ -97,6 +93,7 @@ public class RoomElementActivity extends AppCompatActivity {
 
                     }
                 });
+                alert.setView(myView);
                 alert.show();
             }
         });

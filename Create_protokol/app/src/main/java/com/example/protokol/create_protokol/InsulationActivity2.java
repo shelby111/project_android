@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -55,10 +56,10 @@ public class InsulationActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity2.this);
+                View myView = getLayoutInflater().inflate(R.layout.dialog_for_names,null);
                 alert.setCancelable(false);
                 alert.setTitle("Введите название щита:");
-                final EditText input = new EditText(InsulationActivity2.this);
-                alert.setView(input);
+                final EditText input = myView.findViewById(R.id.editText);
                 alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         final String nameLine = input.getText().toString();
@@ -78,6 +79,7 @@ public class InsulationActivity2 extends AppCompatActivity {
 
                     }
                 });
+                alert.setView(myView);
                 alert.show();
             }
         });
@@ -174,6 +176,13 @@ public class InsulationActivity2 extends AppCompatActivity {
         });
     }
 
+    //НА ГЛАВНУЮ
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main2, menu);
+        return true;
+    }
+
     //НАЗАД
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -181,6 +190,10 @@ public class InsulationActivity2 extends AppCompatActivity {
             case android.R.id.home:
                 Intent intent = new Intent("android.intent.action.Insulation");
                 startActivity(intent);
+                return true;
+            case R.id.action_main:
+                Intent intent1 = new Intent(InsulationActivity2.this, MainActivity.class);
+                startActivity(intent1);
                 return true;
         }
         return super.onOptionsItemSelected(item);

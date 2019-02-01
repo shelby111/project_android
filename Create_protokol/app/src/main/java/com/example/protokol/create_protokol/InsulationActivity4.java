@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -187,10 +188,10 @@ public class InsulationActivity4 extends AppCompatActivity {
                     alert.setPositiveButton("Ввести", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             AlertDialog.Builder alert1 = new AlertDialog.Builder(InsulationActivity4.this);
+                            View myView = getLayoutInflater().inflate(R.layout.dialog_for_names,null);
                             alert1.setCancelable(false);
                             alert1.setTitle("Введите марку:");
-                            final EditText input = new EditText(InsulationActivity4.this);
-                            alert1.setView(input);
+                            final EditText input = myView.findViewById(R.id.editText);
                             alert1.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     String nameMark = input.getText().toString();
@@ -202,6 +203,7 @@ public class InsulationActivity4 extends AppCompatActivity {
 
                                 }
                             });
+                            alert1.setView(myView);
                             alert1.show();
                         }
                     });
@@ -680,6 +682,13 @@ public class InsulationActivity4 extends AppCompatActivity {
         });
     }
 
+    //НА ГЛАВНУЮ
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main2, menu);
+        return true;
+    }
+
     //НАЗАД
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -691,6 +700,10 @@ public class InsulationActivity4 extends AppCompatActivity {
                 intent.putExtra("nameLine", nameLine);
                 intent.putExtra("idLine", idLine);
                 startActivity(intent);
+                return true;
+            case R.id.action_main:
+                Intent intent1 = new Intent(InsulationActivity4.this, MainActivity.class);
+                startActivity(intent1);
                 return true;
         }
         return super.onOptionsItemSelected(item);

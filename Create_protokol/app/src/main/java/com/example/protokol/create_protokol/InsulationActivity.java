@@ -64,10 +64,10 @@ public class InsulationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(InsulationActivity.this);
+                View myView = getLayoutInflater().inflate(R.layout.dialog_for_names,null);
                 alert.setCancelable(false);
                 alert.setTitle("Введите название комнаты:");
-                final EditText input = new EditText(InsulationActivity.this);
-                alert.setView(input);
+                final EditText input = myView.findViewById(R.id.editText);
                 alert.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         final String nameRoom = input.getText().toString();
@@ -86,6 +86,7 @@ public class InsulationActivity extends AppCompatActivity {
 
                     }
                 });
+                alert.setView(myView);
                 alert.show();
             }
         });

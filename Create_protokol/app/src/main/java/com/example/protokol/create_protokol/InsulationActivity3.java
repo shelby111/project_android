@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -290,6 +291,13 @@ public class InsulationActivity3 extends AppCompatActivity {
         });
     }
 
+    //НА ГЛАВНУЮ
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main2, menu);
+        return true;
+    }
+
     //НАЗАД
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -299,6 +307,10 @@ public class InsulationActivity3 extends AppCompatActivity {
                 intent.putExtra("nameRoom", nameRoom);
                 intent.putExtra("idRoom", idRoom);
                 startActivity(intent);
+                return true;
+            case R.id.action_main:
+                Intent intent1 = new Intent(InsulationActivity3.this, MainActivity.class);
+                startActivity(intent1);
                 return true;
         }
         return super.onOptionsItemSelected(item);
